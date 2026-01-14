@@ -1,0 +1,8 @@
+{
+  "name": "bristolemergencyplumber",
+  "version": "1.0.0",
+  "description": "Bristol Emergency Plumber website",
+  "scripts": {
+    "build": "./scripts/generate-sitemap.sh"
+  }
+}
