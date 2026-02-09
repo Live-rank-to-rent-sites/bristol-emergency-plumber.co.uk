@@ -97,6 +97,12 @@ export async function onRequest({ request, env }) {
   }
 
   const turnstileCheck = await verifyTurnstile(payload.turnstile_token, env.TURNSTILE_SECRET_KEY);
+  if (env.TURNSTILE_SECRET_KEY && !turnstileCheck.success) {
+    return new Response(JSON.stringify({ message: 'Turnstile verification failed.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   const turnstileVerified = turnstileCheck.success ? 1 : 0;
 
   const id = crypto.randomUUID();
