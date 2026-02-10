@@ -87,12 +87,8 @@
                         <h2>Send Us a Message</h2>
                         <p>For non-urgent enquiries, use the form below and we'll respond within 24 hours.</p>
 
-                       <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" id="contactForm">
-    <!-- Web3Forms Access Key - Get your key from https://web3forms.com and set below -->
-    <!-- TODO: Replace with your actual Web3Forms access key -->
-    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" disabled>
-    <input type="hidden" name="subject" value="New Contact Form Submission from Bristol Emergency Plumber">
-    <input type="hidden" name="from_name" value="Bristol Emergency Plumber Website">
+                       <form class="contact-form" id="contactForm">
+    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
 
     <div class="form-group">
         <label for="name">Your Name *</label>
@@ -144,18 +140,30 @@ const formMessage = document.getElementById('form-message');
 form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    if (form.querySelector('[name="website"]').value) return;
+
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.textContent = 'Sending...';
     submitButton.disabled = true;
 
     const formData = new FormData(form);
+    const payload = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        service: formData.get('service'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+        source_page: window.location.pathname
+    };
 
     try {
-        const response = await fetch(form.action, {
+        const response = await fetch('/api/leads', {
             method: 'POST',
-            body: formData,
+            body: JSON.stringify(payload),
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
         });

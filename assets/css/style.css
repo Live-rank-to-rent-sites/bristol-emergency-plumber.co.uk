@@ -152,16 +152,6 @@ p {
     font-size: 0.9rem;
 }
 
-.header-phone {
-    color: var(--white);
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.header-phone:hover {
-    color: var(--accent-color);
-}
-
 .main-nav .container {
     display: flex;
     justify-content: space-between;
