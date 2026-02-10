@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Bristol Emergency Plumber website",
   "scripts": {
-    "build": "./scripts/generate-sitemap.sh"
+    "build": "./scripts/generate-sitemap.sh",
+    "dev": "wrangler pages dev . --d1 DB"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
   }
 }

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Lead Management | Bristol Emergency Plumber</title>
+    <style>
+        :root {
+            --primary-color: #1a5f7a;
+            --primary-dark: #134b61;
+            --secondary-color: #e63946;
+            --text-color: #2d3436;
+            --text-light: #636e72;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+        }
+
+        .manage-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .manage-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .manage-header a {
+            color: var(--white);
+            opacity: 0.8;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .manage-header a:hover { opacity: 1; }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            padding: 20px 30px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .stat-count {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters {
+            padding: 15px 30px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--white);
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn:hover { border-color: var(--primary-color); }
+
+        .leads-container {
+            padding: 20px 30px;
+        }
+
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .leads-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leads-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+
+        .leads-table tr:last-child td { border-bottom: none; }
+        .leads-table tr:hover td { background: #f0f7fa; }
+
+        .status-select {
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-new { background: #d4edda; color: #155724; }
+        .status-contacted { background: #fff3cd; color: #856404; }
+        .status-closed { background: #e2e3e5; color: #383d41; }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-light);
+        }
+
+        .error-msg {
+            text-align: center;
+            padding: 40px;
+            color: var(--secondary-color);
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-light);
+        }
+
+        .message-cell {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .message-cell:hover {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .date-cell {
+            white-space: nowrap;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .manage-header, .stats-bar, .filters, .leads-container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .leads-table { font-size: 0.8rem; }
+            .leads-table th, .leads-table td { padding: 8px 10px; }
+
+            .leads-container { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <header class="manage-header">
+        <h1>Lead Management</h1>
+        <a href="/">Back to website</a>
+    </header>
+
+    <div class="stats-bar" id="statsBar">
+        <div class="stat">
+            <span class="stat-count" id="totalCount">-</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat">
+            <span class="stat-count" id="newCount">-</span>
+            <span class="stat-label">New</span>
+        </div>
+        <div class="stat">
+            <span class="stat-count" id="contactedCount">-</span>
+            <span class="stat-label">Contacted</span>
+        </div>
+        <div class="stat">
+            <span class="stat-count" id="closedCount">-</span>
+            <span class="stat-label">Closed</span>
+        </div>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="new">New</button>
+        <button class="filter-btn" data-filter="contacted">Contacted</button>
+        <button class="filter-btn" data-filter="closed">Closed</button>
+    </div>
+
+    <div class="leads-container">
+        <div class="loading" id="loading">Loading leads...</div>
+        <div class="error-msg" id="errorMsg" style="display:none"></div>
+        <table class="leads-table" id="leadsTable" style="display:none">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Service</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+        </table>
+        <div class="empty-msg" id="emptyMsg" style="display:none">No leads found.</div>
+    </div>
+
+    <script>
+    let allLeads = [];
+    let currentFilter = 'all';
+
+    const serviceLabels = {
+        emergency: 'Emergency Plumber',
+        boiler: 'Boiler Repair',
+        drains: 'Blocked Drains',
+        general: 'General Plumbing',
+        quote: 'Request a Quote',
+        other: 'Other'
+    };
+
+    async function fetchLeads() {
+        try {
+            const response = await fetch('/api/leads');
+            if (!response.ok) throw new Error('Failed to fetch leads');
+            allLeads = await response.json();
+            updateStats();
+            renderLeads();
+        } catch (error) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('errorMsg').textContent = 'Failed to load leads. Please refresh the page.';
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('totalCount').textContent = allLeads.length;
+        document.getElementById('newCount').textContent = allLeads.filter(l => l.status === 'new').length;
+        document.getElementById('contactedCount').textContent = allLeads.filter(l => l.status === 'contacted').length;
+        document.getElementById('closedCount').textContent = allLeads.filter(l => l.status === 'closed').length;
+    }
+
+    function renderLeads() {
+        document.getElementById('loading').style.display = 'none';
+        const filtered = currentFilter === 'all' ? allLeads : allLeads.filter(l => l.status === currentFilter);
+
+        if (filtered.length === 0) {
+            document.getElementById('leadsTable').style.display = 'none';
+            document.getElementById('emptyMsg').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('emptyMsg').style.display = 'none';
+        document.getElementById('leadsTable').style.display = 'table';
+
+        const tbody = document.getElementById('leadsBody');
+        tbody.innerHTML = filtered.map(lead => {
+            const date = new Date(lead.created_at + 'Z');
+            const dateStr = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            const service = lead.service ? (serviceLabels[lead.service] || lead.service) : '-';
+            const message = lead.message || '-';
+
+            return `<tr>
+                <td class="date-cell">${dateStr}<br>${timeStr}</td>
+                <td>${escapeHtml(lead.name)}</td>
+                <td><a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></td>
+                <td><a href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a></td>
+                <td>${escapeHtml(service)}</td>
+                <td class="message-cell" title="${escapeHtml(message)}">${escapeHtml(message)}</td>
+                <td>
+                    <select class="status-select" data-id="${lead.id}" onchange="updateStatus(this)">
+                        <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                        <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                        <option value="closed" ${lead.status === 'closed' ? 'selected' : ''}>Closed</option>
+                    </select>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    async function updateStatus(selectEl) {
+        const id = selectEl.dataset.id;
+        const status = selectEl.value;
+
+        try {
+            const response = await fetch('/api/leads/' + id, {
+                method: 'PATCH',
+                body: JSON.stringify({ status }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) throw new Error('Update failed');
+
+            const lead = allLeads.find(l => l.id === id);
+            if (lead) lead.status = status;
+            updateStats();
+        } catch (error) {
+            alert('Failed to update status. Please try again.');
+            fetchLeads();
+        }
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderLeads();
+        });
+    });
+
+    fetchLeads();
+    </script>
+</body>
+</html>
