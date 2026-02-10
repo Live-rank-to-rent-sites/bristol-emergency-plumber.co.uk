@@ -6,6 +6,7 @@ Sitemap: https://bristolemergencyplumber.co.uk/sitemap.xml
 # Disallow admin and private directories
 Disallow: /admin/
 Disallow: /private/
+Disallow: /manage
 
 # Allow all crawlers access to assets
 Allow: /assets/

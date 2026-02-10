@@ -156,17 +156,17 @@
                         </div>
                     </div>
                     <div class="hero-form-wrapper">
-                        <form class="hero-form" action="https://api.web3forms.com/submit" method="POST" id="heroContactForm">
+                        <form class="hero-form" id="heroContactForm">
                             <h2>Request a Callback</h2>
                             <p>Fill in your details and we'll call you back promptly.</p>
-                            <!-- Web3Forms Access Key - Get your key from https://web3forms.com and set below -->
-                            <!-- TODO: Replace with your actual Web3Forms access key -->
-                            <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" disabled>
-                            <input type="hidden" name="subject" value="New Callback Request from Bristol Emergency Plumber">
-                            <input type="hidden" name="from_name" value="Bristol Emergency Plumber Website">
+                            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
                             <div class="form-group">
                                 <label for="hero-name">Your Name *</label>
                                 <input type="text" id="hero-name" name="name" required placeholder="John Smith">
+                            </div>
+                            <div class="form-group">
+                                <label for="hero-email">Email Address *</label>
+                                <input type="email" id="hero-email" name="email" required placeholder="john@example.com">
                             </div>
                             <div class="form-group">
                                 <label for="hero-phone">Phone Number *</label>
@@ -381,12 +381,22 @@
         submitButton.disabled = true;
 
         const formData = new FormData(heroForm);
+        const payload = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            service: formData.get('service'),
+            message: formData.get('message'),
+            website: formData.get('website'),
+            source_page: window.location.pathname
+        };
 
         try {
-            const response = await fetch(heroForm.action, {
+            const response = await fetch('/api/leads', {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify(payload),
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
@@ -399,7 +409,8 @@
                 heroFormMessage.textContent = 'Thank you! We\'ll call you back shortly.';
                 heroForm.reset();
             } else {
-                throw new Error('Form submission failed');
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || 'Form submission failed');
             }
         } catch (error) {
             heroFormMessage.style.display = 'block';

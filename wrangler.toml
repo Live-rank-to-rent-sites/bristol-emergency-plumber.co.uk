@@ -1,0 +1,9 @@
+name = "bristol-emergency-plumber"
+compatibility_date = "2024-10-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bristol-emergency-plumber"
+# TODO: Run `wrangler d1 create bristol-emergency-plumber` and paste the database_id here
+# database_id = "your-database-id-here"

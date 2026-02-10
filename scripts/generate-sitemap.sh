@@ -88,7 +88,7 @@ for file in "$ROOT_DIR"/services/*.html; do
 done
 
 # Note: Legal/policy pages (privacy-policy, terms, cookie-policy, accessibility)
-# are excluded from sitemap as they have noindex meta tags
+# and manage.html are excluded from sitemap as they have noindex meta tags
 
 # Close sitemap
 echo "</urlset>" >> "$SITEMAP_FILE"
