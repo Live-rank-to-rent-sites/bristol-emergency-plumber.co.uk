@@ -2,6 +2,9 @@ name: Setup D1 Database
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/setup-d1.yml'
 
 jobs:
   setup-d1:
