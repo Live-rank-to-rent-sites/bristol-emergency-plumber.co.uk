@@ -1,57 +1,47 @@
 #!/usr/bin/env python3
-"""Generate WebP images for Bristol Emergency Plumber website."""
+"""Generate WebP images for Bristol Emergency Plumber website.
+
+Creates visually distinct hero and location card images with high contrast
+elements that remain visible through a semi-transparent CSS gradient overlay.
+"""
 
 import math
 import os
 import random
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
-# Site colour palette
-PRIMARY = (26, 95, 122)       # #1a5f7a
-PRIMARY_DARK = (19, 75, 97)   # #134b61
-SECONDARY = (230, 57, 70)     # #e63946
-ACCENT = (244, 162, 97)       # #f4a261
+# Brighter palette for images (NOT the same as the CSS overlay)
+DARK_NAVY = (8, 35, 55)
+MID_BLUE = (20, 70, 100)
+TEAL = (30, 130, 150)
+LIGHT_TEAL = (60, 180, 200)
+LIGHT_BLUE = (100, 200, 230)
+SKY_BLUE = (140, 210, 240)
+WARM_ORANGE = (244, 162, 97)
+RED = (230, 57, 70)
 WHITE = (255, 255, 255)
-LIGHT_BLUE = (79, 195, 247)   # #4fc3f7
+SOFT_WHITE = (200, 220, 230)
+YELLOW_GLOW = (255, 220, 120)
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'assets', 'images')
 
 
 def lerp_color(c1, c2, t):
-    """Linearly interpolate between two RGB colours."""
     return tuple(int(c1[i] + (c2[i] - c1[i]) * t) for i in range(3))
 
 
-def draw_gradient(draw, width, height, color1, color2, angle=135):
-    """Draw a diagonal gradient."""
-    rad = math.radians(angle)
-    cos_a = math.cos(rad)
-    sin_a = math.sin(rad)
-    max_d = abs(width * cos_a) + abs(height * sin_a)
-    for y in range(height):
-        for x in range(0, width, 2):
-            d = x * cos_a + y * sin_a
-            t = max(0, min(1, (d / max_d + 0.5)))
-            color = lerp_color(color1, color2, t)
-            draw.rectangle([x, y, x + 1, y], fill=color)
-
-
 def draw_gradient_fast(img, color1, color2, angle=135):
-    """Draw a gradient using numpy-like row operations for speed."""
     width, height = img.size
     draw = ImageDraw.Draw(img)
     rad = math.radians(angle)
-    cos_a = math.cos(rad)
-    sin_a = math.sin(rad)
+    cos_a, sin_a = math.cos(rad), math.sin(rad)
     max_d = abs(width * cos_a) + abs(height * sin_a)
     for y in range(height):
-        # Calculate colour at left and right edge of this row
-        t_left = max(0, min(1, (0 * cos_a + y * sin_a) / max_d + 0.5))
+        t_left = max(0, min(1, (y * sin_a) / max_d + 0.5))
         t_right = max(0, min(1, (width * cos_a + y * sin_a) / max_d + 0.5))
         c_left = lerp_color(color1, color2, t_left)
         c_right = lerp_color(color1, color2, t_right)
-        # Draw horizontal gradient line
         for x in range(0, width, 4):
             t = x / width
             color = lerp_color(c_left, c_right, t)
@@ -59,365 +49,248 @@ def draw_gradient_fast(img, color1, color2, angle=135):
     return draw
 
 
-def draw_circle(draw, cx, cy, r, fill=None, outline=None, width=1):
-    """Draw a circle centered at (cx, cy)."""
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=fill, outline=outline, width=width)
-
-
-def draw_wrench(draw, x, y, scale=1.0, color=WHITE):
-    """Draw a simplified wrench silhouette."""
-    s = scale
-    # Handle
-    draw.rectangle([x, y, x + int(80 * s), y + int(16 * s)], fill=color)
-    # Head (open jaw)
-    draw.polygon([
-        (x + int(80 * s), y - int(12 * s)),
-        (x + int(110 * s), y - int(12 * s)),
-        (x + int(110 * s), y + int(28 * s)),
-        (x + int(80 * s), y + int(28 * s)),
-    ], fill=color)
-    # Jaw opening
-    draw.rectangle([x + int(88 * s), y + int(2 * s), x + int(105 * s), y + int(14 * s)],
-                   fill=lerp_color(PRIMARY_DARK, (0, 0, 0), 0.3))
-
-
-def draw_water_drop(draw, cx, cy, size=30, color=LIGHT_BLUE):
-    """Draw a water droplet shape."""
-    # Teardrop: circle at bottom, triangle at top
-    r = size // 2
-    draw_circle(draw, cx, cy + r // 2, r, fill=color)
-    draw.polygon([
-        (cx, cy - size),
-        (cx - r, cy + r // 2),
-        (cx + r, cy + r // 2),
-    ], fill=color)
-
-
-def draw_pipe_horizontal(draw, x, y, length, thickness=20, color=None):
-    """Draw a horizontal pipe segment."""
-    if color is None:
-        color = lerp_color(PRIMARY, WHITE, 0.15)
-    draw.rectangle([x, y, x + length, y + thickness], fill=color)
-    # Highlights
-    highlight = lerp_color(color, WHITE, 0.3)
-    draw.rectangle([x, y + 2, x + length, y + 5], fill=highlight)
-
-
-def draw_pipe_vertical(draw, x, y, length, thickness=20, color=None):
-    """Draw a vertical pipe segment."""
-    if color is None:
-        color = lerp_color(PRIMARY, WHITE, 0.15)
-    draw.rectangle([x, y, x + thickness, y + length], fill=color)
-    highlight = lerp_color(color, WHITE, 0.3)
-    draw.rectangle([x + 2, y, x + 5, y + length], fill=highlight)
-
-
-def draw_pipe_elbow(draw, x, y, thickness=20, direction='tr', color=None):
-    """Draw a pipe elbow joint."""
-    if color is None:
-        color = lerp_color(PRIMARY, WHITE, 0.15)
-    joint_color = lerp_color(color, WHITE, 0.1)
-    draw.ellipse([x - thickness // 2, y - thickness // 2,
-                  x + thickness + thickness // 2, y + thickness + thickness // 2],
-                 fill=joint_color)
-
-
-def draw_building_silhouette(draw, x, base_y, width, height, color, windows=True):
-    """Draw a building silhouette with optional windows."""
-    draw.rectangle([x, base_y - height, x + width, base_y], fill=color)
-    # Roof
-    roof_h = height // 6
-    draw.polygon([
-        (x - 3, base_y - height),
-        (x + width // 2, base_y - height - roof_h),
-        (x + width + 3, base_y - height),
-    ], fill=color)
-    if windows and width > 20:
-        win_color = lerp_color(color, ACCENT, 0.4)
-        win_w = max(4, width // 6)
-        win_h = max(6, height // 8)
-        cols = max(1, (width - 10) // (win_w + 6))
-        rows = max(1, (height - 20) // (win_h + 8))
-        x_start = x + (width - cols * (win_w + 6)) // 2
-        for row in range(rows):
-            for col in range(cols):
-                wx = x_start + col * (win_w + 6)
-                wy = base_y - height + 15 + row * (win_h + 8)
-                if wy + win_h < base_y - 5:
-                    draw.rectangle([wx, wy, wx + win_w, wy + win_h], fill=win_color)
-
-
-def draw_map_pin(draw, cx, cy, size=40, color=SECONDARY):
-    """Draw a map/location pin."""
-    r = size // 2
-    # Circle head
-    draw_circle(draw, cx, cy, r, fill=color)
-    # Pin point
-    draw.polygon([
-        (cx - r + 5, cy + r // 2),
-        (cx, cy + size + r // 2),
-        (cx + r - 5, cy + r // 2),
-    ], fill=color)
-    # Inner dot
-    draw_circle(draw, cx, cy, r // 3, fill=WHITE)
-
-
-def draw_compass_indicator(draw, cx, cy, direction, size=60, color=ACCENT):
-    """Draw a compass direction indicator."""
-    r = size // 2
-    # Outer ring
-    draw_circle(draw, cx, cy, r, outline=color, width=3)
-    # Direction arrow
-    arrow_len = r - 8
-    angles = {'N': -90, 'S': 90, 'E': 0, 'W': 180}
-    angle = math.radians(angles.get(direction, 0))
-    tip_x = cx + int(arrow_len * math.cos(angle))
-    tip_y = cy + int(arrow_len * math.sin(angle))
-    draw.line([(cx, cy), (tip_x, tip_y)], fill=color, width=3)
-    # Arrow head
-    draw_circle(draw, tip_x, tip_y, 5, fill=color)
-    # Centre dot
-    draw_circle(draw, cx, cy, 4, fill=color)
-
-
 def generate_hero_home(filepath):
-    """Generate home page hero image — plumbing themed."""
+    """Home hero — bright, high-contrast plumbing-themed image."""
     w, h = 1920, 800
     img = Image.new('RGB', (w, h))
-    draw = draw_gradient_fast(img, PRIMARY, PRIMARY_DARK, angle=135)
+    # Use a LIGHTER gradient so details show through the CSS overlay
+    draw_gradient_fast(img, (15, 55, 80), (40, 100, 130), angle=135)
+    draw = ImageDraw.Draw(img)
 
-    # Semi-transparent overlay shapes for depth
-    overlay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
+    # Bold pipe network - fully opaque, bright colours
+    pipe_color = TEAL
+    pipe_highlight = LIGHT_TEAL
+    joint_color = LIGHT_BLUE
 
-    # Pipe network across the background
-    pipe_color = (*lerp_color(PRIMARY, WHITE, 0.08), 60)
-
-    # Horizontal pipes
-    for y_pos in [120, 280, 480, 650]:
-        odraw.rectangle([0, y_pos, w, y_pos + 24], fill=pipe_color)
-        # Highlight
-        odraw.rectangle([0, y_pos + 3, w, y_pos + 6], fill=(*WHITE, 15))
+    # Horizontal pipes — thick and visible
+    h_pipes = [100, 250, 420, 580, 720]
+    for yp in h_pipes:
+        draw.rectangle([0, yp, w, yp + 30], fill=pipe_color)
+        draw.rectangle([0, yp + 3, w, yp + 8], fill=pipe_highlight)
+        draw.rectangle([0, yp + 27, w, yp + 30], fill=MID_BLUE)
 
     # Vertical pipes
-    for x_pos in [200, 500, 900, 1300, 1700]:
-        odraw.rectangle([x_pos, 0, x_pos + 24, h], fill=pipe_color)
-        odraw.rectangle([x_pos + 3, 0, x_pos + 6, h], fill=(*WHITE, 15))
+    v_pipes = [150, 400, 700, 1000, 1300, 1600, 1850]
+    for xp in v_pipes:
+        draw.rectangle([xp, 0, xp + 30, h], fill=pipe_color)
+        draw.rectangle([xp + 3, 0, xp + 8, h], fill=pipe_highlight)
+        draw.rectangle([xp + 27, 0, xp + 30, h], fill=MID_BLUE)
 
-    # Elbow joints at intersections
-    for x_pos in [200, 500, 900, 1300, 1700]:
-        for y_pos in [120, 280, 480, 650]:
-            odraw.ellipse([x_pos - 8, y_pos - 8, x_pos + 32, y_pos + 32],
-                         fill=(*lerp_color(PRIMARY, WHITE, 0.12), 70))
+    # Bright elbow joints at intersections
+    for xp in v_pipes:
+        for yp in h_pipes:
+            draw.ellipse([xp - 10, yp - 10, xp + 40, yp + 40], fill=joint_color)
+            draw.ellipse([xp - 2, yp - 2, xp + 32, yp + 32], fill=pipe_color)
+            # Bolt detail
+            draw.ellipse([xp + 8, yp + 8, xp + 22, yp + 22], fill=LIGHT_TEAL)
 
-    # Water droplets scattered
+    # Large water drops — fully opaque, bright
     random.seed(42)
-    for _ in range(25):
-        dx = random.randint(50, w - 50)
-        dy = random.randint(50, h - 50)
-        ds = random.randint(15, 35)
-        drop_color = (*LIGHT_BLUE, random.randint(30, 70))
+    for _ in range(35):
+        dx = random.randint(30, w - 30)
+        dy = random.randint(30, h - 30)
+        ds = random.randint(20, 50)
         r = ds // 2
-        odraw.ellipse([dx - r, dy, dx + r, dy + ds], fill=drop_color)
-        odraw.polygon([(dx, dy - ds // 2), (dx - r, dy + r // 2), (dx + r, dy + r // 2)],
-                     fill=drop_color)
+        drop_col = lerp_color(LIGHT_BLUE, SKY_BLUE, random.random())
+        # Teardrop
+        draw.ellipse([dx - r, dy, dx + r, dy + ds], fill=drop_col)
+        draw.polygon([(dx, dy - ds + 5), (dx - r + 3, dy + 5), (dx + r - 3, dy + 5)], fill=drop_col)
+        # Highlight
+        draw.ellipse([dx - r // 3, dy + r // 2, dx + r // 3, dy + r], fill=WHITE)
 
-    # Wrench silhouettes
-    wrench_color = (*WHITE, 25)
-    for wx, wy, ws, wr in [(150, 350, 2.5, 15), (1400, 150, 3.0, -20), (800, 550, 2.0, 30)]:
-        # Rotated wrench using rectangles as approximation
-        odraw.rectangle([wx, wy, wx + int(100 * ws), wy + int(18 * ws)], fill=wrench_color)
-        odraw.rectangle([wx + int(85 * ws), wy - int(14 * ws),
-                        wx + int(120 * ws), wy + int(32 * ws)], fill=wrench_color)
-        odraw.rectangle([wx + int(92 * ws), wy + int(2 * ws),
-                        wx + int(112 * ws), wy + int(16 * ws)],
-                       fill=(*PRIMARY_DARK, 40))
+    # Wrench silhouettes — large, bright white
+    for wx, wy, scale in [(80, 300, 3.0), (1200, 100, 3.5), (600, 500, 2.5)]:
+        s = scale
+        wrench_col = SOFT_WHITE
+        # Handle
+        draw.rectangle([wx, wy, wx + int(90 * s), wy + int(20 * s)], fill=wrench_col)
+        draw.rectangle([wx, wy + 2, wx + int(90 * s), wy + int(6 * s)], fill=WHITE)
+        # Head
+        draw.rectangle([wx + int(80 * s), wy - int(15 * s),
+                        wx + int(115 * s), wy + int(35 * s)], fill=wrench_col)
+        # Jaw gap
+        draw.rectangle([wx + int(88 * s), wy + int(2 * s),
+                        wx + int(108 * s), wy + int(18 * s)], fill=MID_BLUE)
 
-    # Large decorative circles
-    for cx, cy, cr in [(1600, 200, 180), (300, 600, 150), (1000, 100, 120)]:
-        odraw.ellipse([cx - cr, cy - cr, cx + cr, cy + cr],
-                     outline=(*LIGHT_BLUE, 30), width=2)
-        odraw.ellipse([cx - cr + 20, cy - cr + 20, cx + cr - 20, cy + cr - 20],
-                     outline=(*WHITE, 20), width=1)
+    # Glowing accent circles
+    for cx, cy, cr in [(1650, 180, 200), (250, 620, 170), (950, 80, 140)]:
+        for i in range(5):
+            r = cr - i * 15
+            opacity_color = lerp_color(LIGHT_BLUE, WHITE, i / 5)
+            draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=opacity_color, width=2)
 
-    # Subtle diagonal lines for texture
-    for i in range(-h, w + h, 80):
-        odraw.line([(i, 0), (i + h, h)], fill=(*WHITE, 8), width=1)
+    # Bright diagonal texture lines
+    for i in range(-h, w + h, 60):
+        draw.line([(i, 0), (i + h, h)], fill=lerp_color(TEAL, LIGHT_TEAL, 0.5), width=1)
 
-    img.paste(Image.alpha_composite(Image.new('RGBA', (w, h), (0, 0, 0, 0)), overlay).convert('RGB'),
-              mask=overlay.split()[3])
-
-    img.save(filepath, 'WEBP', quality=80)
+    img.save(filepath, 'WEBP', quality=82)
     print(f"  Created: {filepath} ({os.path.getsize(filepath)} bytes)")
 
 
 def generate_hero_locations(filepath):
-    """Generate locations page hero image — cityscape/map themed."""
+    """Locations hero — Bristol cityscape with map elements."""
     w, h = 1920, 600
     img = Image.new('RGB', (w, h))
-    draw = draw_gradient_fast(img, lerp_color(PRIMARY, PRIMARY_DARK, 0.3),
-                               lerp_color(PRIMARY_DARK, (10, 40, 60), 0.5), angle=150)
+    draw_gradient_fast(img, (12, 45, 70), (35, 90, 120), angle=150)
+    draw = ImageDraw.Draw(img)
 
-    overlay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
-
-    # Grid lines (map-like)
-    grid_color = (*WHITE, 12)
+    # Visible grid lines (map-like)
+    grid_color = lerp_color(TEAL, LIGHT_TEAL, 0.3)
     for x in range(0, w, 60):
-        odraw.line([(x, 0), (x, h)], fill=grid_color, width=1)
+        draw.line([(x, 0), (x, h)], fill=grid_color, width=1)
     for y in range(0, h, 60):
-        odraw.line([(0, y), (w, y)], fill=grid_color, width=1)
+        draw.line([(0, y), (w, y)], fill=grid_color, width=1)
 
-    # Bristol skyline silhouette at bottom
-    base_y = h - 20
-    buildings = [
-        (50, 120), (110, 90), (160, 150), (230, 80), (290, 130),
-        (350, 170), (430, 100), (490, 140), (560, 110), (620, 160),
-        (700, 95), (760, 180), (840, 120), (900, 85), (960, 145),
-        (1030, 130), (1100, 170), (1180, 100), (1240, 155), (1320, 90),
-        (1380, 140), (1450, 115), (1520, 165), (1600, 95), (1680, 130),
-        (1750, 110), (1830, 145),
-    ]
-    silhouette_color = (*lerp_color(PRIMARY_DARK, (0, 0, 0), 0.3), 50)
-    for bx, bh in buildings:
-        bw = random.randint(40, 65)
-        odraw.rectangle([bx, base_y - bh, bx + bw, base_y], fill=silhouette_color)
-        # Peaked roof for some
-        if bh > 120:
-            odraw.polygon([
+    # Bristol skyline — solid, bright silhouettes
+    base_y = h - 10
+    random.seed(99)
+    building_color = lerp_color(MID_BLUE, TEAL, 0.4)
+    window_color = YELLOW_GLOW
+
+    buildings = []
+    x = 10
+    while x < w - 20:
+        bw = random.randint(35, 70)
+        bh = random.randint(60, 200)
+        has_roof = random.random() > 0.4
+        buildings.append((x, bw, bh, has_roof))
+        x += bw + random.randint(3, 12)
+
+    for bx, bw, bh, has_roof in buildings:
+        col = lerp_color(building_color, LIGHT_TEAL, random.random() * 0.3)
+        draw.rectangle([bx, base_y - bh, bx + bw, base_y], fill=col)
+        if has_roof:
+            draw.polygon([
                 (bx - 2, base_y - bh),
-                (bx + bw // 2, base_y - bh - 20),
+                (bx + bw // 2, base_y - bh - 18),
                 (bx + bw + 2, base_y - bh),
-            ], fill=silhouette_color)
+            ], fill=col)
+        # Lit windows
+        for wy in range(base_y - bh + 12, base_y - 8, 22):
+            for wx in range(bx + 6, bx + bw - 6, 14):
+                if wx + 6 < bx + bw - 3 and random.random() > 0.3:
+                    draw.rectangle([wx, wy, wx + 6, wy + 10], fill=window_color)
 
-    # Clifton Suspension Bridge silhouette (iconic Bristol)
-    bridge_color = (*lerp_color(PRIMARY, WHITE, 0.15), 45)
+    # Clifton Suspension Bridge — bright and visible
+    bridge_col = LIGHT_BLUE
+    tower_col = SKY_BLUE
     # Towers
-    odraw.rectangle([750, base_y - 220, 770, base_y - 80], fill=bridge_color)
-    odraw.rectangle([1150, base_y - 220, 1170, base_y - 80], fill=bridge_color)
+    draw.rectangle([750, base_y - 250, 775, base_y - 60], fill=tower_col)
+    draw.rectangle([1145, base_y - 250, 1170, base_y - 60], fill=tower_col)
+    # Tower tops
+    draw.polygon([(745, base_y - 250), (762, base_y - 275), (780, base_y - 250)], fill=tower_col)
+    draw.polygon([(1140, base_y - 250), (1157, base_y - 275), (1175, base_y - 250)], fill=tower_col)
     # Deck
-    odraw.rectangle([770, base_y - 100, 1150, base_y - 90], fill=bridge_color)
-    # Cables (catenary approximation)
-    for offset in range(0, 380, 30):
-        cx = 770 + offset
-        sag = int(40 * math.sin(math.pi * offset / 380))
-        odraw.line([(cx, base_y - 220 + sag), (cx, base_y - 95)], fill=bridge_color, width=1)
-    # Main cable
-    for x in range(770, 1150, 3):
-        t = (x - 770) / 380
-        sag = int(40 * math.sin(math.pi * t))
-        odraw.rectangle([x, base_y - 220 + sag, x + 2, base_y - 218 + sag], fill=bridge_color)
+    draw.rectangle([775, base_y - 80, 1145, base_y - 68], fill=bridge_col)
+    # Main cables
+    for x in range(750, 1170, 2):
+        t = (x - 750) / 420
+        sag = int(55 * math.sin(math.pi * t))
+        draw.rectangle([x, base_y - 250 + sag, x + 2, base_y - 248 + sag], fill=bridge_col)
+    # Suspender cables
+    for offset in range(30, 390, 25):
+        cx = 775 + offset
+        t = offset / 420
+        sag = int(55 * math.sin(math.pi * t))
+        draw.line([(cx, base_y - 250 + sag), (cx, base_y - 72)], fill=bridge_col, width=1)
 
-    # Map pins scattered
-    pin_positions = [(300, 180), (600, 250), (960, 150), (1300, 200), (1650, 170)]
+    # Large map pins — bold red
+    pin_positions = [(280, 150), (580, 200), (960, 120), (1340, 170), (1680, 140)]
     for px, py in pin_positions:
-        pin_size = 30
-        pr = pin_size // 2
-        pin_color = (*SECONDARY, 80)
-        odraw.ellipse([px - pr, py - pr, px + pr, py + pr], fill=pin_color)
-        odraw.polygon([(px - pr + 5, py + pr // 2), (px, py + pin_size + pr // 2),
-                       (px + pr - 5, py + pr // 2)], fill=pin_color)
-        odraw.ellipse([px - pr // 3, py - pr // 3, px + pr // 3, py + pr // 3],
-                     fill=(*WHITE, 80))
+        pin_r = 20
+        draw.ellipse([px - pin_r, py - pin_r, px + pin_r, py + pin_r], fill=RED)
+        draw.polygon([(px - 12, py + 12), (px, py + 45), (px + 12, py + 12)], fill=RED)
+        draw.ellipse([px - 7, py - 7, px + 7, py + 7], fill=WHITE)
 
-    # Decorative circles (compass rose feel)
-    for cx, cy, cr in [(960, 300, 200), (960, 300, 160), (960, 300, 120)]:
-        odraw.ellipse([cx - cr, cy - cr, cx + cr, cy + cr],
-                     outline=(*ACCENT, 20), width=1)
+    # Compass circles
+    cx, cy = 960, 280
+    for cr in [180, 140, 100]:
+        draw.ellipse([cx - cr, cy - cr, cx + cr, cy + cr], outline=WARM_ORANGE, width=2)
+    # Compass cross
+    draw.line([(cx, cy - 90), (cx, cy + 90)], fill=WARM_ORANGE, width=2)
+    draw.line([(cx - 90, cy), (cx + 90, cy)], fill=WARM_ORANGE, width=2)
+    # N marker
+    draw.ellipse([cx - 8, cy - 95, cx + 8, cy - 79], fill=RED)
 
-    # Diagonal texture
-    for i in range(-h, w + h, 100):
-        odraw.line([(i, 0), (i + h, h)], fill=(*WHITE, 6), width=1)
-
-    img.paste(Image.alpha_composite(Image.new('RGBA', (w, h), (0, 0, 0, 0)), overlay).convert('RGB'),
-              mask=overlay.split()[3])
-
-    img.save(filepath, 'WEBP', quality=80)
+    img.save(filepath, 'WEBP', quality=82)
     print(f"  Created: {filepath} ({os.path.getsize(filepath)} bytes)")
 
 
-def generate_location_card(filepath, direction, tint_offset, buildings_config):
-    """Generate a location card image."""
+def generate_location_card(filepath, direction, base_colors, buildings_config):
+    """Generate a location card image with unique colour scheme."""
     w, h = 600, 400
-    # Unique tint per card
-    base1 = lerp_color(PRIMARY, tint_offset, 0.15)
-    base2 = lerp_color(PRIMARY_DARK, tint_offset, 0.1)
-
     img = Image.new('RGB', (w, h))
-    draw = draw_gradient_fast(img, base1, base2, angle=140)
+    draw_gradient_fast(img, base_colors[0], base_colors[1], angle=140)
+    draw = ImageDraw.Draw(img)
 
-    overlay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    odraw = ImageDraw.Draw(overlay)
+    accent = base_colors[2]
+    highlight = base_colors[3]
 
-    # Subtle grid
-    grid_color = (*WHITE, 10)
+    # Grid
     for x in range(0, w, 40):
-        odraw.line([(x, 0), (x, h)], fill=grid_color, width=1)
+        draw.line([(x, 0), (x, h)], fill=lerp_color(accent, highlight, 0.3), width=1)
     for y in range(0, h, 40):
-        odraw.line([(0, y), (w, y)], fill=grid_color, width=1)
+        draw.line([(0, y), (w, y)], fill=lerp_color(accent, highlight, 0.3), width=1)
 
-    # Building silhouettes along the bottom
-    base_y = h - 15
-    bldg_color = (*lerp_color(PRIMARY_DARK, (0, 0, 0), 0.4), 60)
+    # Building skyline
+    base_y = h - 10
     for bx, bw, bh, has_roof in buildings_config:
-        odraw.rectangle([bx, base_y - bh, bx + bw, base_y], fill=bldg_color)
+        col = accent
+        draw.rectangle([bx, base_y - bh, bx + bw, base_y], fill=col)
         if has_roof:
-            odraw.polygon([
+            draw.polygon([
                 (bx - 2, base_y - bh),
-                (bx + bw // 2, base_y - bh - 15),
+                (bx + bw // 2, base_y - bh - 14),
                 (bx + bw + 2, base_y - bh),
-            ], fill=bldg_color)
+            ], fill=col)
         # Windows
-        win_c = (*ACCENT, 35)
-        for wy in range(base_y - bh + 15, base_y - 10, 25):
-            for wx in range(bx + 8, bx + bw - 8, 18):
-                if wx + 8 < bx + bw - 5:
-                    odraw.rectangle([wx, wy, wx + 8, wy + 12], fill=win_c)
+        for wy in range(base_y - bh + 12, base_y - 8, 20):
+            for wx in range(bx + 6, bx + bw - 6, 14):
+                if wx + 6 < bx + bw - 3:
+                    draw.rectangle([wx, wy, wx + 6, wy + 10], fill=YELLOW_GLOW)
 
-    # Compass indicator in upper area
-    cx, cy = 480, 100
-    r = 45
-    compass_color = (*ACCENT, 100)
-    odraw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=compass_color, width=2)
-    odraw.ellipse([cx - r + 8, cy - r + 8, cx + r - 8, cy + r - 8], outline=(*WHITE, 40), width=1)
+    # Compass indicator — large and visible
+    cx, cy = 490, 90
+    r = 50
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=WARM_ORANGE, width=3)
+    draw.ellipse([cx - r + 10, cy - r + 10, cx + r - 10, cy + r - 10], outline=highlight, width=2)
     # Direction arrow
-    angles = {'N': -90, 'S': 90, 'E': 0, 'W': 180}
+    angles = {'N': -90, 'S': 90, 'E': 0, 'W': 180, 'C': 0}
     angle = math.radians(angles.get(direction, 0))
-    arrow_len = r - 12
-    tip_x = cx + int(arrow_len * math.cos(angle))
-    tip_y = cy + int(arrow_len * math.sin(angle))
-    odraw.line([(cx, cy), (tip_x, tip_y)], fill=compass_color, width=3)
-    odraw.ellipse([tip_x - 5, tip_y - 5, tip_x + 5, tip_y + 5], fill=compass_color)
-    odraw.ellipse([cx - 4, cy - 4, cx + 4, cy + 4], fill=compass_color)
+    arrow_len = r - 14
+    if direction == 'C':
+        # Centre — bullseye
+        draw.ellipse([cx - 20, cy - 20, cx + 20, cy + 20], fill=RED)
+        draw.ellipse([cx - 8, cy - 8, cx + 8, cy + 8], fill=WHITE)
+    else:
+        tip_x = cx + int(arrow_len * math.cos(angle))
+        tip_y = cy + int(arrow_len * math.sin(angle))
+        draw.line([(cx, cy), (tip_x, tip_y)], fill=WARM_ORANGE, width=4)
+        draw.ellipse([tip_x - 7, tip_y - 7, tip_x + 7, tip_y + 7], fill=RED)
+    draw.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=WARM_ORANGE)
     # Cardinal marks
     for label, a in [('N', -90), ('S', 90), ('E', 0), ('W', 180)]:
         ar = math.radians(a)
-        mark_x = cx + int((r + 12) * math.cos(ar))
-        mark_y = cy + int((r + 12) * math.sin(ar))
-        mark_c = (*ACCENT, 120) if label == direction else (*WHITE, 50)
-        odraw.ellipse([mark_x - 3, mark_y - 3, mark_x + 3, mark_y + 3], fill=mark_c)
-
-    # Decorative elements
-    # Large faded circle
-    odraw.ellipse([100 - 80, 80 - 80, 100 + 80, 80 + 80], outline=(*LIGHT_BLUE, 25), width=2)
-    # Diagonal texture
-    for i in range(-h, w + h, 60):
-        odraw.line([(i, 0), (i + h, h)], fill=(*WHITE, 5), width=1)
+        mx = cx + int((r + 14) * math.cos(ar))
+        my = cy + int((r + 14) * math.sin(ar))
+        col = RED if label == direction else highlight
+        draw.ellipse([mx - 4, my - 4, mx + 4, my + 4], fill=col)
 
     # Map pin
-    px, py = 150, 200
-    pin_size = 25
-    pr = pin_size // 2
-    pin_color = (*SECONDARY, 90)
-    odraw.ellipse([px - pr, py - pr, px + pr, py + pr], fill=pin_color)
-    odraw.polygon([(px - pr + 4, py + pr // 2), (px, py + pin_size + pr // 2),
-                   (px + pr - 4, py + pr // 2)], fill=pin_color)
-    odraw.ellipse([px - pr // 3, py - pr // 3, px + pr // 3, py + pr // 3], fill=(*WHITE, 90))
+    px, py = 130, 170
+    draw.ellipse([px - 16, py - 16, px + 16, py + 16], fill=RED)
+    draw.polygon([(px - 10, py + 10), (px, py + 38), (px + 10, py + 10)], fill=RED)
+    draw.ellipse([px - 6, py - 6, px + 6, py + 6], fill=WHITE)
 
-    img.paste(Image.alpha_composite(Image.new('RGBA', (w, h), (0, 0, 0, 0)), overlay).convert('RGB'),
-              mask=overlay.split()[3])
+    # Decorative circles
+    draw.ellipse([60 - 70, 70 - 70, 60 + 70, 70 + 70], outline=highlight, width=2)
+    draw.ellipse([350 - 50, 250 - 50, 350 + 50, 250 + 50], outline=highlight, width=2)
 
-    img.save(filepath, 'WEBP', quality=80)
+    # Diagonal texture
+    for i in range(-h, w + h, 50):
+        draw.line([(i, 0), (i + h, h)], fill=lerp_color(accent, highlight, 0.4), width=1)
+
+    img.save(filepath, 'WEBP', quality=82)
     print(f"  Created: {filepath} ({os.path.getsize(filepath)} bytes)")
 
 
@@ -431,11 +304,12 @@ def main():
 
     print("Generating location card images...")
 
-    # North Bristol — semi-detached, modern
+    # Each card has unique colour scheme: (gradient_start, gradient_end, accent, highlight)
+    # North Bristol — cool teal
     generate_location_card(
         os.path.join(OUTPUT_DIR, 'location-north-bristol.webp'),
         direction='N',
-        tint_offset=(40, 120, 160),
+        base_colors=((15, 60, 90), (30, 100, 140), (50, 140, 170), (120, 200, 225)),
         buildings_config=[
             (20, 55, 100, True), (90, 50, 80, True), (155, 60, 120, False),
             (230, 45, 70, True), (290, 55, 95, True), (360, 65, 110, False),
@@ -443,11 +317,11 @@ def main():
         ]
     )
 
-    # South Bristol — Victorian terraces (narrower, taller, more uniform)
+    # South Bristol — warm blue-purple
     generate_location_card(
         os.path.join(OUTPUT_DIR, 'location-south-bristol.webp'),
         direction='S',
-        tint_offset=(80, 90, 130),
+        base_colors=((25, 50, 85), (45, 75, 115), (65, 95, 140), (140, 170, 210)),
         buildings_config=[
             (15, 35, 110, True), (60, 35, 115, True), (105, 35, 108, True),
             (150, 35, 112, True), (195, 35, 118, True), (240, 35, 105, True),
@@ -457,11 +331,11 @@ def main():
         ]
     )
 
-    # East Bristol — diverse housing mix
+    # East Bristol — green-teal
     generate_location_card(
         os.path.join(OUTPUT_DIR, 'location-east-bristol.webp'),
         direction='E',
-        tint_offset=(50, 100, 140),
+        base_colors=((10, 55, 70), (25, 90, 110), (45, 130, 145), (110, 195, 200)),
         buildings_config=[
             (10, 60, 90, True), (85, 40, 130, False), (140, 55, 80, True),
             (210, 70, 110, False), (295, 45, 95, True), (355, 55, 140, False),
@@ -469,22 +343,22 @@ def main():
         ]
     )
 
-    # West Bristol — Georgian/period (wider, elegant proportions)
+    # West Bristol — elegant blue-grey
     generate_location_card(
         os.path.join(OUTPUT_DIR, 'location-west-bristol.webp'),
         direction='W',
-        tint_offset=(30, 80, 120),
+        base_colors=((18, 48, 75), (35, 80, 110), (55, 115, 145), (130, 180, 210)),
         buildings_config=[
             (20, 80, 130, True), (115, 75, 125, True), (205, 85, 135, True),
             (305, 70, 120, True), (390, 80, 130, True), (485, 75, 125, True),
         ]
     )
 
-    # Central Bristol — mixed commercial/residential (varied heights)
+    # Central Bristol — vibrant blue
     generate_location_card(
         os.path.join(OUTPUT_DIR, 'location-central-bristol.webp'),
         direction='C',
-        tint_offset=(60, 85, 110),
+        base_colors=((12, 45, 80), (30, 80, 120), (50, 120, 155), (120, 190, 220)),
         buildings_config=[
             (10, 50, 160, False), (75, 65, 100, True), (155, 45, 180, False),
             (215, 70, 90, True), (300, 55, 150, False), (370, 60, 120, True),
@@ -493,7 +367,6 @@ def main():
     )
 
     print("\nAll images generated successfully!")
-    # List files
     for f in sorted(os.listdir(OUTPUT_DIR)):
         if f.endswith('.webp'):
             fpath = os.path.join(OUTPUT_DIR, f)
