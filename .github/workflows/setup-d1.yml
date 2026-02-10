@@ -1,0 +1,83 @@
+name: Setup D1 Database
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-d1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      - name: Create D1 database
+        id: create-db
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Try to create the database, capture output
+          OUTPUT=$(wrangler d1 create bristol-emergency-plumber 2>&1) || true
+          echo "$OUTPUT"
+
+          # Extract database_id from output
+          DB_ID=$(echo "$OUTPUT" | grep -oP 'database_id\s*=\s*"\K[^"]+' || true)
+
+          if [ -z "$DB_ID" ]; then
+            # Database might already exist, list databases to find it
+            LIST_OUTPUT=$(wrangler d1 list 2>&1)
+            echo "$LIST_OUTPUT"
+            DB_ID=$(echo "$LIST_OUTPUT" | grep 'bristol-emergency-plumber' | grep -oP '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1)
+          fi
+
+          if [ -z "$DB_ID" ]; then
+            echo "ERROR: Could not create or find D1 database"
+            exit 1
+          fi
+
+          echo "database_id=$DB_ID" >> "$GITHUB_OUTPUT"
+          echo "Database ID: $DB_ID"
+
+      - name: Update wrangler.toml with database_id
+        run: |
+          DB_ID="${{ steps.create-db.outputs.database_id }}"
+          cat > wrangler.toml << EOF
+          name = "bristol-emergency-plumber"
+          compatibility_date = "2024-10-01"
+          pages_build_output_dir = "."
+
+          [[d1_databases]]
+          binding = "DB"
+          database_name = "bristol-emergency-plumber"
+          database_id = "$DB_ID"
+          EOF
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' wrangler.toml
+
+      - name: Run database migration
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          wrangler d1 execute bristol-emergency-plumber --remote --file=migrations/0001_create_leads.sql
+
+      - name: Verify table exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          wrangler d1 execute bristol-emergency-plumber --remote --command="SELECT name FROM sqlite_master WHERE type='table' AND name='leads';"
+
+      - name: Commit and push updated wrangler.toml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add wrangler.toml
+          git commit -m "Add D1 database_id to wrangler.toml [automated]" || echo "No changes to commit"
+          git push
