@@ -1185,4 +1185,62 @@ p {
         flex-direction: column;
         gap: 5px;
     }
+
+    .contact-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+    padding: 12px 0;
+    font-size: 0.875rem;
+}
+
+.breadcrumb ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+.breadcrumb li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb li + li::before {
+    content: "›";
+    padding: 0 8px;
+    color: var(--text-light);
+}
+
+.breadcrumb a {
+    color: var(--primary-color);
+}
+
+.breadcrumb .current {
+    color: var(--text-light);
+}
+
+/* Accessibility: Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Contact page grid */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
 }
