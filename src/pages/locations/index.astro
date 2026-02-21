@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://bristolemergencyplumber.co.uk/locations/" }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Locations We Serve | Bristol Emergency Plumber"
+  description="Bristol Emergency Plumber serves all Bristol areas. Find local plumbers in North, South, East, West and Central Bristol. 24/7 emergency service with fast response times."
+  canonical="https://bristolemergencyplumber.co.uk/locations/"
+  ogTitle="Bristol Plumber - Locations We Serve"
+  ogDescription="Professional plumbing services across all Bristol areas. Fast response times throughout the city."
+  ogImage="https://bristolemergencyplumber.co.uk/assets/images/hero-locations-bristol.webp"
+  currentPage="locations"
+  jsonLd={jsonLd}
+>
+  <link slot="extraHead" rel="preload" as="image" href="/assets/images/hero-locations-bristol.webp" type="image/webp">
+  <link slot="extraHead" rel="preconnect" href="https://maps.googleapis.com">
+  <link slot="extraHead" rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><span class="current">Locations</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section class="page-hero page-hero--locations">
+      <div class="container">
+        <h1>Locations We Serve</h1>
+        <p>Professional plumbing services throughout Bristol and surrounding areas</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Bristol-Wide Plumbing Coverage</h2>
+        <p>Our team of experienced, Gas Safe registered plumbers provides comprehensive coverage across Bristol and the surrounding region. With engineers strategically positioned throughout the city, we typically reach most locations within 30-60 minutes for emergencies.</p>
+
+        <p>We've organised our coverage into five regions, each served by plumbers who specialise in the unique characteristics of that area—from period properties in the west to modern developments in the north.</p>
+
+        <div class="regions-grid">
+          <div class="region-card">
+            <img src="/assets/images/location-north-bristol.webp" alt="Emergency plumber service area covering North Bristol including Horfield, Filton and Bishopston" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="North Bristol plumbing service area">
+            <h3><a href="/locations/north-bristol">North Bristol</a></h3>
+            <p class="postcodes">BS7, BS9, BS10, BS32, BS34</p>
+            <p>Covering Horfield, Filton, Southmead, Bishopston, Henleaze, Westbury-on-Trym and Bradley Stoke. From 1930s semis to modern new-builds, our North Bristol team handles it all.</p>
+            <ul>
+              <li>Inter-war housing specialists</li>
+              <li>New-build snagging experts</li>
+              <li>Typical response: 20-40 mins</li>
+            </ul>
+            <a href="/locations/north-bristol" class="btn btn-secondary">North Bristol Plumbers</a>
+          </div>
+
+          <div class="region-card">
+            <img src="/assets/images/location-south-bristol.webp" alt="Emergency plumber service area covering South Bristol including Bedminster, Knowle and Brislington" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="South Bristol plumbing service area">
+            <h3><a href="/locations/south-bristol">South Bristol</a></h3>
+            <p class="postcodes">BS3, BS4, BS13</p>
+            <p>Covering Bedminster, Southville, Knowle, Brislington, Hartcliffe, Withywood, Ashton and Totterdown. Strong community connections and diverse housing expertise.</p>
+            <ul>
+              <li>Victorian terrace experts</li>
+              <li>Landlord services available</li>
+              <li>Typical response: 20-35 mins</li>
+            </ul>
+            <a href="/locations/south-bristol" class="btn btn-secondary">South Bristol Plumbers</a>
+          </div>
+
+          <div class="region-card">
+            <img src="/assets/images/location-east-bristol.webp" alt="Emergency plumber service area covering East Bristol including Fishponds, Easton and St George" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="East Bristol plumbing service area">
+            <h3><a href="/locations/east-bristol">East Bristol</a></h3>
+            <p class="postcodes">BS5, BS15, BS16</p>
+            <p>Covering Fishponds, Easton, Eastville, St George, Speedwell, Kingswood and Stapleton. Diverse neighbourhoods with varied housing stock.</p>
+            <ul>
+              <li>HMO compliance specialists</li>
+              <li>Hard water solutions</li>
+              <li>Typical response: 15-35 mins</li>
+            </ul>
+            <a href="/locations/east-bristol" class="btn btn-secondary">East Bristol Plumbers</a>
+          </div>
+
+          <div class="region-card">
+            <img src="/assets/images/location-west-bristol.webp" alt="Emergency plumber service area covering West Bristol including Clifton, Redland and Cotham" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="West Bristol plumbing service area">
+            <h3><a href="/locations/west-bristol">West Bristol</a></h3>
+            <p class="postcodes">BS6, BS8</p>
+            <p>Covering Clifton, Hotwells, Redland, Cotham and Kingsdown. Period property specialists with listed building experience.</p>
+            <ul>
+              <li>Georgian &amp; Victorian experts</li>
+              <li>Listed building experience</li>
+              <li>Typical response: 20-30 mins</li>
+            </ul>
+            <a href="/locations/west-bristol" class="btn btn-secondary">West Bristol Plumbers</a>
+          </div>
+
+          <div class="region-card">
+            <img src="/assets/images/location-central-bristol.webp" alt="Emergency plumber service area covering Central Bristol including city centre, Montpelier and St Pauls" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="Central Bristol plumbing service area">
+            <h3><a href="/locations/central-bristol">Central Bristol</a></h3>
+            <p class="postcodes">BS1, BS2</p>
+            <p>Covering Montpelier, St Pauls, St Werburghs, Stokes Croft, Old Market and City Centre. Commercial and residential expertise.</p>
+            <ul>
+              <li>Commercial plumbing services</li>
+              <li>Fastest response times</li>
+              <li>Typical response: 10-25 mins</li>
+            </ul>
+            <a href="/locations/central-bristol" class="btn btn-secondary">Central Bristol Plumbers</a>
+          </div>
+        </div>
+
+        <h2>Not Sure Which Region?</h2>
+        <p>Don't worry about boundaries—just call us and we'll send the nearest available plumber to your location. Our dispatch system automatically identifies the best engineer for your postcode. To learn more about what we can help with, explore our <a href="/services/">full range of plumbing services</a> or <a href="/contact">get in touch</a> to discuss your requirements.</p>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="container">
+        <h2>Our Coverage Map</h2>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d79412.94890554045!2d-2.6504!3d51.4545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48718e824e07c22f%3A0x3e4a9c9fbb59c6b8!2sBristol%2C%20UK!5e0!3m2!1sen!2suk!4v1704067200000!5m2!1sen!2suk" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bristol plumber coverage map"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need a Plumber in Bristol?</h2>
+        <p>Wherever you are in Bristol, our team is ready to help with fast, professional plumbing services.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
+        </div>
+        <p class="cta-note">24/7 emergency service across all Bristol locations</p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

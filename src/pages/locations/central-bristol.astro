@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Emergency Plumber Central Bristol",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Bristol Emergency Plumber",
+      "telephone": "+44-117-428-0200"
+    },
+    "areaServed": ["Bristol City Centre", "Montpelier", "St Pauls", "St Werburghs", "Old Market"],
+    "description": "Commercial and residential plumbing services in Central Bristol"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://bristolemergencyplumber.co.uk/locations/" },
+      { "@type": "ListItem", "position": 3, "name": "Central Bristol", "item": "https://bristolemergencyplumber.co.uk/locations/central-bristol" }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Emergency Plumber Central Bristol | 24/7 Service"
+  description="Emergency plumber in Central Bristol covering Montpelier, St Pauls, St Werburghs and the city centre. Commercial and residential plumbing. Fast response times."
+  canonical="https://bristolemergencyplumber.co.uk/locations/central-bristol"
+  ogTitle="Emergency Plumber Central Bristol | Commercial &amp; Residential"
+  ogDescription="Professional plumbing for Central Bristol including Montpelier, St Pauls, St Werburghs and the city centre. Commercial and residential services."
+  currentPage="locations"
+  jsonLd={jsonLd}
+>
+  <link slot="extraHead" rel="preconnect" href="https://maps.googleapis.com">
+  <link slot="extraHead" rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><a href="/locations/">Locations</a></li><li><span class="current">Central Bristol</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Emergency Plumber in Central Bristol</h1>
+        <p>Commercial and residential services for Montpelier, St Pauls, St Werburghs &amp; City Centre</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Commercial &amp; Residential Plumbing in Bristol's Heart</h2>
+        <p>Central Bristol is where the city's commercial and creative heart beats. From the independent businesses of Stokes Croft to the offices and restaurants of the city centre, from the colourful houses of Montpelier to the community gardens of St Werburghs, this area demands versatile plumbers who can handle anything.</p>
+
+        <p>We serve both the businesses that keep Bristol running and the residents who call central Bristol home. Our commercial division handles everything from restaurant kitchen plumbing to office building maintenance, while our residential team specialises in the converted warehouses, Victorian terraces, and modern apartments that characterise central living.</p>
+
+        <h3>Areas We Cover in Central Bristol</h3>
+        <div class="areas-grid">
+          <div class="area-card">
+            <h4>Montpelier &amp; St Andrews</h4>
+            <p>Postcodes: BS6, BS2</p>
+            <p>Bristol's bohemian heartland, featuring a vibrant mix of Victorian terraces, many converted to flats or HMOs. The area's independent spirit attracts residents who appreciate character properties. We're experienced with the quirks of converted buildings and the creative plumbing solutions sometimes required in unconventional spaces.</p>
+          </div>
+          <div class="area-card">
+            <h4>St Pauls</h4>
+            <p>Postcodes: BS2</p>
+            <p>A diverse, dynamic neighbourhood with Georgian and Victorian properties alongside newer developments. St Pauls' cultural importance is matched by practical needs—we provide reliable plumbing services to residents and the many community organisations that call the area home.</p>
+          </div>
+          <div class="area-card">
+            <h4>St Werburghs</h4>
+            <p>Postcodes: BS2</p>
+            <p>An eco-conscious community known for its city farm and allotments. Properties range from traditional Victorian terraces to eco-builds and converted industrial spaces. We're experienced with sustainable plumbing solutions including rainwater harvesting, greywater recycling, and solar thermal installations.</p>
+          </div>
+          <div class="area-card">
+            <h4>City Centre &amp; Harbourside</h4>
+            <p>Postcodes: BS1, BS2</p>
+            <p>Bristol's commercial core plus the regenerated Harbourside with its converted warehouses and modern apartments. We provide rapid-response commercial services for shops, restaurants, and offices alongside residential work in city-centre living spaces.</p>
+          </div>
+          <div class="area-card">
+            <h4>Stokes Croft &amp; Old Market</h4>
+            <p>Postcodes: BS2, BS1</p>
+            <p>Bristol's creative quarter, mixing commercial premises with residential properties above. Many buildings combine ground-floor businesses with upper-floor flats, requiring plumbers who understand both commercial and domestic requirements. We handle complex mixed-use properties efficiently.</p>
+          </div>
+        </div>
+
+        <h3>Commercial Plumbing Services</h3>
+        <p>Central Bristol's businesses rely on us for:</p>
+        <ul>
+          <li><strong>Restaurant &amp; café plumbing:</strong> Grease trap installation and maintenance, commercial dishwasher connections, extraction system drainage, and emergency repairs to minimise trading disruption.</li>
+          <li><strong>Office buildings:</strong> Washroom maintenance contracts, water heater servicing, and emergency response for leaks that threaten IT equipment or stock.</li>
+          <li><strong>Retail premises:</strong> Staff facilities installation, accessible toilet conversions, and planned maintenance to avoid disruption during trading hours.</li>
+          <li><strong>Pubs &amp; bars:</strong> Cellar drainage, glasswasher plumbing, and 24/7 emergency cover for venues that can't afford downtime.</li>
+          <li><strong>Hotels &amp; B&amp;Bs:</strong> Multi-room maintenance contracts, emergency response to protect guest experience, and bathroom renovation projects scheduled around bookings.</li>
+        </ul>
+
+        <h3>Residential Services in Central Bristol</h3>
+        <p>Living in central Bristol brings unique plumbing considerations:</p>
+        <ul>
+          <li><strong>Converted buildings:</strong> Former warehouses, factories, and commercial buildings converted to residential use often have unusual layouts and shared services. We're experienced in navigating these complexities.</li>
+          <li><strong>Flat living:</strong> Whether you're in a Victorian conversion or a modern apartment block, we understand the dynamics of communal buildings including freeholder responsibilities and shared infrastructure.</li>
+          <li><strong>Limited access:</strong> City centre properties often have no parking and restricted access. Our plumbers travel light when needed and are used to carrying equipment through buildings.</li>
+          <li><strong>Noise considerations:</strong> In dense residential areas, we're mindful of neighbours and can schedule noisy work appropriately.</li>
+        </ul>
+
+        <h3>Fastest Response Times in Bristol</h3>
+        <p>Our central location means we can reach city centre emergencies in as little as 10-15 minutes. For businesses facing trading disruption or residents dealing with flooding, this rapid response can make a significant difference.</p>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Supporting Central Bristol's Community</h2>
+        <p>We're proud to support the community organisations that make central Bristol special. From preferential rates for registered charities to emergency support for community venues, we believe in giving back to the neighbourhoods that support us.</p>
+        <ul>
+          <li>Commercial contracts with flexible payment terms for small businesses</li>
+          <li>Emergency priority for community centres and places of worship</li>
+          <li>Eco-friendly options aligned with St Werburghs' sustainability focus</li>
+          <li>Experience with Bristol's independent business community</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Services Available in Central Bristol</h2>
+        <p>From commercial kitchens to residential conversions, our Central Bristol team delivers professional plumbing services with the fastest response times in the city.</p>
+        <div class="services-grid">
+          <div class="service-card">
+            <h3><a href="/emergency-plumber-bristol">Emergency Plumber</a></h3>
+            <p>Emergency response in as little as 10-15 minutes to central Bristol locations. Commercial and residential emergencies handled with equal urgency.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/24-hour-plumber-bristol">24 Hour Plumber</a></h3>
+            <p>Round-the-clock service for city centre businesses and residents. Minimising disruption to trading and daily life at any hour.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/boiler-repair-bristol">Boiler Repair</a></h3>
+            <p>Commercial and domestic boiler expertise for Central Bristol's diverse property types. From converted warehouse heating to restaurant hot water systems.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/blocked-drains-bristol">Blocked Drains</a></h3>
+            <p>Commercial drainage including grease trap maintenance for restaurants, plus residential drain clearance for the converted buildings of Montpelier and St Werburghs.</p>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem;"><a href="/services/">View all our plumbing services</a></p>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="container">
+        <h2>Central Bristol Coverage Map</h2>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9930!2d-2.59!3d51.46!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDI3JzM2LjAiTiAywrAzNScyNC4wIlc!5e0!3m2!1sen!2suk!4v1234567890" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Central Bristol coverage area"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Other Areas We Cover</h2>
+        <p>Our plumbing services extend throughout all of Bristol. Explore our other coverage areas:</p>
+        <div class="locations-grid">
+          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
+          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
+          <a href="/locations/east-bristol" class="location-link">East Bristol</a>
+          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
+        </div>
+        <p class="locations-note"><a href="/locations/">View all Bristol locations</a></p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need a Plumber in Central Bristol?</h2>
+        <p>Commercial and residential services. Fastest response times in the city.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call Now: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Request a Callback</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

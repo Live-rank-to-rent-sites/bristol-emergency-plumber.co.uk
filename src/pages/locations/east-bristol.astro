@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Emergency Plumber East Bristol",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Bristol Emergency Plumber",
+      "telephone": "+44-117-428-0200"
+    },
+    "areaServed": ["Fishponds", "Easton", "Eastville", "St George", "Speedwell", "Kingswood", "Stapleton"],
+    "description": "24/7 emergency plumbing services across East Bristol"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://bristolemergencyplumber.co.uk/locations/" },
+      { "@type": "ListItem", "position": 3, "name": "East Bristol", "item": "https://bristolemergencyplumber.co.uk/locations/east-bristol" }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Emergency Plumber East Bristol | 24/7 Service"
+  description="Emergency plumber in East Bristol covering Fishponds, Easton, Eastville, St George, Speedwell, Kingswood and Stapleton. Fast response, Gas Safe registered engineers."
+  canonical="https://bristolemergencyplumber.co.uk/locations/east-bristol"
+  ogTitle="Emergency Plumber East Bristol | 24/7 Service"
+  ogDescription="Professional plumbing services across East Bristol. Covering Fishponds, Easton, Eastville, St George, Speedwell, Kingswood and Stapleton."
+  currentPage="locations"
+  jsonLd={jsonLd}
+>
+  <link slot="extraHead" rel="preconnect" href="https://maps.googleapis.com">
+  <link slot="extraHead" rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><a href="/locations/">Locations</a></li><li><span class="current">East Bristol</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Emergency Plumber in East Bristol</h1>
+        <p>Covering Fishponds, Easton, Eastville, St George, Speedwell, Kingswood &amp; Stapleton</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Expert Plumbers Across East Bristol</h2>
+        <p>East Bristol represents some of the city's most diverse and dynamic neighbourhoods. From the multicultural hub of Easton to the suburban streets of Fishponds, from the valley communities of Speedwell to the edge-of-city expanses of Kingswood, this region demands plumbers who understand its variety.</p>
+
+        <p>The housing stock in East Bristol tells the story of the city's industrial growth. Victorian workers' cottages in Easton and St George sit alongside 1930s semis in Fishponds and post-war developments in Kingswood. Each era brought different construction methods and plumbing systems—and different challenges for modern maintenance.</p>
+
+        <h3>Areas We Cover in East Bristol</h3>
+        <div class="areas-grid">
+          <div class="area-card">
+            <h4>Fishponds</h4>
+            <p>Postcodes: BS16</p>
+            <p>A busy suburban centre with excellent amenities. Properties range from Victorian terraces near Fishponds Road to 1930s semis and modern infill developments. The area's popularity with families means we frequently handle bathroom additions and heating upgrades for growing households.</p>
+          </div>
+          <div class="area-card">
+            <h4>Easton</h4>
+            <p>Postcodes: BS5</p>
+            <p>Bristol's most diverse neighbourhood, with Victorian terraces converted into flats and HMOs alongside family homes. Easton's bohemian character attracts creative renovations, and we're experienced in working with unusual layouts and eco-friendly plumbing solutions like rainwater harvesting.</p>
+          </div>
+          <div class="area-card">
+            <h4>Eastville &amp; Stapleton</h4>
+            <p>Postcodes: BS5, BS16</p>
+            <p>Residential areas bordering Eastville Park and the M32. A mix of Victorian, inter-war and post-war housing. Many properties here have original heating systems due for replacement. We offer competitive quotes for full system upgrades.</p>
+          </div>
+          <div class="area-card">
+            <h4>St George &amp; Speedwell</h4>
+            <p>Postcodes: BS5, BS15</p>
+            <p>Traditional working-class communities with strong local identity. Compact Victorian and Edwardian terraces predominate, often with access challenges that require experienced plumbers. We're used to working in tight spaces and arranging work around narrow streets and limited parking.</p>
+          </div>
+          <div class="area-card">
+            <h4>Kingswood</h4>
+            <p>Postcodes: BS15</p>
+            <p>Straddling the Bristol/South Gloucestershire border, Kingswood offers more spacious properties at accessible prices. The area includes older cottages in the High Street conservation area and larger family homes in surrounding streets. We handle everything from listed building considerations to standard domestic work.</p>
+          </div>
+        </div>
+
+        <h3>East Bristol Plumbing Challenges We Solve</h3>
+        <p>Years of working across East Bristol have given us insight into the area's recurring issues:</p>
+        <ul>
+          <li><strong>HMO compliance in Easton:</strong> With many properties converted to houses in multiple occupation, we provide landlord services including gas safety certificates, fire valve installations, and multi-occupancy heating solutions.</li>
+          <li><strong>Hard water in BS16:</strong> Fishponds and surrounding areas experience limescale buildup that affects boiler efficiency and appliance lifespan. We install water softeners and provide descaling services.</li>
+          <li><strong>Victorian drainage in St George:</strong> Original clay pipes serving Victorian terraces are prone to root ingress and collapse. We offer CCTV surveys and no-dig repair solutions.</li>
+          <li><strong>Access challenges:</strong> Many East Bristol streets have limited parking and narrow rear access. Our plumbers are equipped with portable tools and experienced in carrying materials through houses when necessary.</li>
+        </ul>
+
+        <h3>Fast Response Times in East Bristol</h3>
+        <p>Our central location means we can reach East Bristol quickly:</p>
+        <ul>
+          <li>Easton, Eastville, Stapleton: Typically 15-25 minutes</li>
+          <li>Fishponds, St George, Speedwell: Typically 20-30 minutes</li>
+          <li>Kingswood: Typically 25-35 minutes</li>
+        </ul>
+
+        <h3>Student and Landlord Services</h3>
+        <p>East Bristol houses many students and young professionals in rented accommodation. We offer dedicated landlord services including:</p>
+        <ul>
+          <li>Annual gas safety inspections (CP12 certificates)</li>
+          <li>Emergency cover contracts with guaranteed response times</li>
+          <li>Void property inspections and repairs</li>
+          <li>Tenant liaison—we can arrange access directly with occupants</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Part of the East Bristol Community</h2>
+        <p>Our plumbers don't just work in East Bristol—they're part of the community. We understand the area's character, from the independent shops of St Mark's Road to the community spirit of Speedwell's allotments. When you call Bristol Emergency Plumber, you're supporting a local business that gives back.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Services Available in East Bristol</h2>
+        <p>Our East Bristol team handles everything from emergency callouts to planned installations across Fishponds, Easton, St George, and beyond.</p>
+        <div class="services-grid">
+          <div class="service-card">
+            <h3><a href="/emergency-plumber-bristol">Emergency Plumber</a></h3>
+            <p>Fast emergency response across East Bristol with typical arrival times of 15-35 minutes. Burst pipes, flooding, and gas leaks dealt with immediately.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/24-hour-plumber-bristol">24 Hour Plumber</a></h3>
+            <p>Night and weekend plumbing for Fishponds, Easton, Kingswood, and all East Bristol areas. No job too small, no hour too late.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/boiler-repair-bristol">Boiler Repair</a></h3>
+            <p>Gas Safe engineers experienced with the hard water conditions in BS16 that reduce boiler efficiency. Repairs, servicing, and full replacements.</p>
+          </div>
+          <div class="service-card">
+            <h3><a href="/blocked-drains-bristol">Blocked Drains</a></h3>
+            <p>Expert drain clearance for East Bristol's Victorian clay pipe systems. CCTV surveys, root cutting, and no-dig repair solutions available.</p>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem;"><a href="/services/">View all our plumbing services</a></p>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="container">
+        <h2>East Bristol Coverage Map</h2>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d39650!2d-2.54!3d51.47!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDI4JzEyLjAiTiAywrAzMicyNC4wIlc!5e0!3m2!1sen!2suk!4v1234567890" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing East Bristol coverage area"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Other Areas We Cover</h2>
+        <p>Our plumbing services extend throughout all of Bristol. Explore our other coverage areas:</p>
+        <div class="locations-grid">
+          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
+          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
+          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
+          <a href="/locations/central-bristol" class="location-link">Central Bristol</a>
+        </div>
+        <p class="locations-note"><a href="/locations/">View all Bristol locations</a></p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need a Plumber in East Bristol?</h2>
+        <p>Fast, reliable service from plumbers who know your area.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call Now: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Request a Callback</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
