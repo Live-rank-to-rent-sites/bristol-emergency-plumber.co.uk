@@ -23,6 +23,8 @@ add_url() {
     local file="$ROOT_DIR$path"
     if [[ "$path" == */ ]]; then
         file="$ROOT_DIR${path}index.html"
+    elif [[ ! -f "$file" && -f "${file}.html" ]]; then
+        file="${file}.html"
     fi
 
     if [[ -f "$file" ]]; then
@@ -49,7 +51,7 @@ add_url "/" "1.0" "weekly"
 for file in "$ROOT_DIR"/*-bristol.html; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
-        add_url "/$filename" "0.9" "monthly"
+        add_url "/${filename%.html}" "0.9" "monthly"
     fi
 done
 
@@ -59,12 +61,12 @@ add_url "/locations/" "0.8" "monthly"
 
 # Contact page - high priority
 if [[ -f "$ROOT_DIR/contact.html" ]]; then
-    add_url "/contact.html" "0.8" "monthly"
+    add_url "/contact" "0.8" "monthly"
 fi
 
 # About page
 if [[ -f "$ROOT_DIR/about.html" ]]; then
-    add_url "/about.html" "0.7" "monthly"
+    add_url "/about" "0.7" "monthly"
 fi
 
 # Location pages - medium priority
@@ -72,7 +74,7 @@ for file in "$ROOT_DIR"/locations/*.html; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
         if [[ "$filename" != "index.html" ]]; then
-            add_url "/locations/$filename" "0.7" "monthly"
+            add_url "/locations/${filename%.html}" "0.7" "monthly"
         fi
     fi
 done
@@ -82,7 +84,7 @@ for file in "$ROOT_DIR"/services/*.html; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
         if [[ "$filename" != "index.html" ]]; then
-            add_url "/services/$filename" "0.7" "monthly"
+            add_url "/services/${filename%.html}" "0.7" "monthly"
         fi
     fi
 done
