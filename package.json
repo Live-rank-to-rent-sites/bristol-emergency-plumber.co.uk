@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "Bristol Emergency Plumber website",
   "scripts": {
-    "build": "./scripts/generate-sitemap.sh",
-    "dev": "wrangler pages dev . --d1 DB"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
+    "astro": "^5.17.3"
   }
 }
