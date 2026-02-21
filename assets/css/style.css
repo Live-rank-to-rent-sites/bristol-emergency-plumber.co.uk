@@ -188,6 +188,13 @@ p {
     color: var(--primary-color);
 }
 
+.nav-links a[aria-current="page"] {
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 2px;
+}
+
 .cta-button {
     background-color: var(--secondary-color);
     color: var(--white);

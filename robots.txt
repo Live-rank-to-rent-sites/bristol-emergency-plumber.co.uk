@@ -9,5 +9,8 @@ Disallow: /private/
 Disallow: /manage.html
 Disallow: /manage
 
+Disallow: /functions/
+Disallow: /scripts/
+
 # Allow all crawlers access to assets
 Allow: /assets/
