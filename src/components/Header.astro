@@ -1,0 +1,42 @@
+---
+interface Props {
+  currentPage?: string;
+}
+
+const { currentPage = '' } = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Home', key: 'home' },
+  { href: '/services/', label: 'Services', key: 'services' },
+  { href: '/locations/', label: 'Locations', key: 'locations' },
+  { href: '/about', label: 'About', key: 'about' },
+  { href: '/contact', label: 'Contact', key: 'contact' },
+];
+---
+
+<header class="site-header" role="banner">
+    <div class="header-top">
+        <div class="container">
+            <span class="emergency-banner">24/7 Emergency Response - Call Now</span>
+        </div>
+    </div>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Bristol Emergency Plumber" width="40" height="40"> Bristol Emergency Plumber</a>
+            <ul class="nav-links">
+                {navItems.map((item) => (
+                    <li>
+                        <a
+                            href={item.href}
+                            aria-current={currentPage === item.key ? 'page' : undefined}
+                        >{item.label}</a>
+                    </li>
+                ))}
+            </ul>
+            <a href="tel:+441174280200" class="cta-button">Call 0117 428 0200</a>
+            <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+</header>
