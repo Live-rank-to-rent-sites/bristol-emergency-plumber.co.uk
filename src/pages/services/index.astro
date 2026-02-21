@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://bristolemergencyplumber.co.uk/services/" }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Plumbing Services in Bristol",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "url": "https://bristolemergencyplumber.co.uk/emergency-plumber-bristol", "name": "Emergency Plumber Bristol" },
+      { "@type": "ListItem", "position": 2, "url": "https://bristolemergencyplumber.co.uk/24-hour-plumber-bristol", "name": "24 Hour Plumber Bristol" },
+      { "@type": "ListItem", "position": 3, "url": "https://bristolemergencyplumber.co.uk/boiler-repair-bristol", "name": "Boiler Repair Bristol" },
+      { "@type": "ListItem", "position": 4, "url": "https://bristolemergencyplumber.co.uk/blocked-drains-bristol", "name": "Blocked Drains Bristol" }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Plumbing Services Bristol | Bristol Emergency Plumber"
+  description="Complete plumbing services in Bristol - emergency plumber, 24 hour callouts, boiler repair, blocked drains and more. Gas Safe registered, available 24/7."
+  canonical="https://bristolemergencyplumber.co.uk/services/"
+  ogTitle="Plumbing Services in Bristol"
+  ogDescription="Complete range of professional plumbing services in Bristol. Emergency repairs, boiler service, drainage solutions and more."
+  currentPage="services"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><span class="current">Services</span></li>
+      </ol>
+    </div>
+  </nav>
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Our Plumbing Services</h1>
+        <p>Professional plumbing solutions throughout Bristol - available 24/7</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <p>Bristol Emergency Plumber provides comprehensive plumbing services for homes and businesses across Bristol. From urgent emergency repairs to scheduled maintenance, our qualified team delivers professional results every time.</p>
+
+        <div class="services-list">
+          <div class="service-item">
+            <h2><a href="/emergency-plumber-bristol">Emergency Plumber Bristol</a></h2>
+            <p>Rapid response emergency plumbing when you need it most. Our emergency team handles burst pipes, severe leaks, flooding, and all urgent plumbing situations. Available 24 hours a day, 365 days a year with typical response times of 30-60 minutes across Bristol.</p>
+            <a href="/emergency-plumber-bristol" class="btn btn-secondary">Learn More</a>
+          </div>
+
+          <div class="service-item">
+            <h2><a href="/24-hour-plumber-bristol">24 Hour Plumber Bristol</a></h2>
+            <p>Round-the-clock plumbing assistance for any situation. Whether you need help at midnight or midday, our fully staffed 24-hour service ensures professional help is always available. No waiting until morning for qualified assistance.</p>
+            <a href="/24-hour-plumber-bristol" class="btn btn-secondary">Learn More</a>
+          </div>
+
+          <div class="service-item">
+            <h2><a href="/boiler-repair-bristol">Boiler Repair Bristol</a></h2>
+            <p>Expert boiler diagnosis and repair by Gas Safe registered engineers. We service all major boiler brands and can resolve most faults during the first visit. Emergency boiler breakdown service available for urgent heating failures.</p>
+            <a href="/boiler-repair-bristol" class="btn btn-secondary">Learn More</a>
+          </div>
+
+          <div class="service-item">
+            <h2><a href="/blocked-drains-bristol">Blocked Drains Bristol</a></h2>
+            <p>Professional drain clearance using high-pressure jetting and CCTV surveys. We clear all types of blockages from toilets and sinks to main sewers. Emergency drain clearance available for flooding and sewage backups.</p>
+            <a href="/blocked-drains-bristol" class="btn btn-secondary">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Services Available Across All Bristol Areas</h2>
+        <p>All our plumbing services are available throughout Bristol. Find your local area for details on response times and local expertise:</p>
+        <div class="locations-grid">
+          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
+          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
+          <a href="/locations/east-bristol" class="location-link">East Bristol</a>
+          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
+          <a href="/locations/central-bristol" class="location-link">Central Bristol</a>
+        </div>
+        <p class="locations-note"><a href="/locations/">View all Bristol locations</a></p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need a Plumber in Bristol?</h2>
+        <p>Contact us now for professional plumbing services. Available 24/7 for emergencies.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Send Us a Message</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
