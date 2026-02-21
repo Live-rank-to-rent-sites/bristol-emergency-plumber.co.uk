@@ -1,5 +1,113 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Plumber",
+    "@id": "https://bristolemergencyplumber.co.uk/#business",
+    "name": "Bristol Emergency Plumber",
+    "description": "Professional emergency plumbing services in Bristol available 24/7. Specialists in burst pipes, boiler repairs, blocked drains and all plumbing emergencies.",
+    "image": "https://bristolemergencyplumber.co.uk/assets/images/hero-emergency-plumber-bristol.webp",
+    "url": "https://bristolemergencyplumber.co.uk/",
+    "telephone": "+44-117-428-0200",
+    "email": "info@bristolemergencyplumber.co.uk",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Future Space, North Gate (UWE), Filton Road",
+      "addressLocality": "Stoke Gifford",
+      "addressRegion": "Bristol",
+      "postalCode": "BS34 8RB",
+      "addressCountry": "GB"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 51.5054,
+      "longitude": -2.5453
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
+    },
+    "priceRange": "££",
+    "areaServed": {
+      "@type": "City",
+      "name": "Bristol",
+      "sameAs": "https://en.wikipedia.org/wiki/Bristol"
+    },
+    "serviceType": ["Emergency Plumber", "24 Hour Plumber", "Boiler Repair", "Blocked Drains"],
+    "paymentAccepted": ["Cash", "Credit Card", "Debit Card", "Bank Transfer"],
+    "currenciesAccepted": "GBP",
+    "knowsLanguage": "en-GB",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "120",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://bristolemergencyplumber.co.uk/#website",
+    "url": "https://bristolemergencyplumber.co.uk/",
+    "name": "Bristol Emergency Plumber",
+    "description": "Bristol's trusted emergency plumber available 24/7 for all plumbing emergencies",
+    "publisher": {
+      "@id": "https://bristolemergencyplumber.co.uk/#business"
+    },
+    "inLanguage": "en-GB"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How quickly can you respond to a plumbing emergency in Bristol?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We aim to reach most Bristol locations within 30-60 minutes of your call. Our emergency plumbers are strategically located across Bristol to ensure the fastest possible response times."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you charge extra for emergency callouts at night or weekends?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our rates remain competitive regardless of when you call. While emergency callouts may have different pricing to standard appointments, we always provide transparent quotes before beginning any work."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are your plumbers Gas Safe registered?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all our plumbers who work on gas appliances are fully Gas Safe registered. We can provide registration details upon request for complete peace of mind."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What should I do while waiting for the emergency plumber?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If you have a water leak, locate your stopcock and turn off the water supply to prevent further damage. For gas-related emergencies, turn off the gas at the meter if safe to do so and open windows for ventilation. Our phone team can provide specific guidance based on your situation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you provide written quotes before starting work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. We always provide a clear, written quote before commencing any work. This quote will detail the work required, all costs involved, and the expected timeframe. We won't start work until you've approved the quote."
+        }
+      }
+    ]
+  }
+];
 ---
 
 <BaseLayout
@@ -10,14 +118,294 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   ogDescription="Bristol's most trusted emergency plumber. Available 24 hours a day, 7 days a week for all plumbing emergencies."
   keywords="emergency plumber Bristol, 24 hour plumber Bristol, burst pipe repair Bristol, boiler repair Bristol, blocked drains Bristol"
   currentPage="home"
+  jsonLd={jsonLd}
 >
+  <link slot="extraHead" rel="preload" as="image" href="/assets/images/hero-emergency-plumber-bristol.webp" type="image/webp">
+
   <main id="main-content" role="main">
     <section class="hero">
       <div class="container">
-        <h1>Bristol's Trusted Emergency Plumbing Service</h1>
-        <p class="hero-subtitle">Fast, Reliable 24/7 Plumbing Services Across Bristol</p>
-        <p class="hero-text">Placeholder — full page content will be migrated in a later prompt.</p>
+        <div class="hero-grid">
+          <div class="hero-content">
+            <span class="urgency-badge"><span class="urgency-dot"></span> Engineers available now</span>
+            <h1>Bristol's Trusted Emergency Plumbing Service</h1>
+            <p class="hero-subtitle">Fast, Reliable 24/7 Plumbing Services Across Bristol</p>
+            <p class="hero-text">When plumbing disasters strike, our experienced emergency plumbers are available around the clock across Bristol and surrounding areas.</p>
+            <div class="hero-cta">
+              <a href="tel:+441174280200" class="btn btn-phone-hero"><span class="phone-icon">&#9742;</span> Call Now: 0117 428 0200</a>
+            </div>
+            <div class="trust-signals">
+              <span>&#10003; 30-60 Min Response</span>
+              <span>&#10003; Gas Safe Registered</span>
+              <span>&#10003; No Call-Out Fee</span>
+              <span>&#10003; Fixed Price Quotes</span>
+            </div>
+            <div class="review-strip">
+              <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span class="review-text">4.9/5 from 120+ Google Reviews</span>
+            </div>
+          </div>
+          <div class="hero-form-wrapper">
+            <form class="hero-form" id="heroContactForm" aria-label="Request a callback">
+              <h2>Not urgent? Request a callback</h2>
+              <p>We'll get back to you within 30 minutes</p>
+              <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+              <div class="form-group">
+                <label for="hero-name">Your Name *</label>
+                <input type="text" id="hero-name" name="name" required placeholder="John Smith">
+              </div>
+              <div class="form-group">
+                <label for="hero-phone">Phone Number *</label>
+                <input type="tel" id="hero-phone" name="phone" required placeholder="07700 900000">
+              </div>
+              <div class="form-group">
+                <label for="hero-service">Service Required</label>
+                <select id="hero-service" name="service">
+                  <option value="">Please select...</option>
+                  <option value="emergency">Emergency Plumber</option>
+                  <option value="boiler">Boiler Repair</option>
+                  <option value="drains">Blocked Drains</option>
+                  <option value="general">General Plumbing</option>
+                  <option value="quote">Request a Quote</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div id="hero-form-message" style="display: none; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 5px; font-size: 0.9rem;"></div>
+              <button type="submit" class="btn btn-primary btn-block">Request Callback</button>
+              <p class="hero-form-note">Or <a href="tel:+441174280200">call us now</a> for immediate help</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-overview">
+      <div class="container">
+        <h2>Our Emergency Plumbing Services in Bristol</h2>
+        <p>Comprehensive emergency plumbing solutions throughout Bristol. Our qualified team handles everything from minor leaks to major emergencies.</p>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <span class="service-icon">&#128295;</span>
+            <h3><a href="/emergency-plumber-bristol">Emergency Plumber Bristol</a></h3>
+            <p>Immediate 24/7 response for burst pipes, flooding, gas leaks and all urgent plumbing emergencies across Bristol.</p>
+            <a href="/emergency-plumber-bristol" class="read-more">Learn more &#8594;</a>
+          </div>
+
+          <div class="service-card">
+            <span class="service-icon">&#128336;</span>
+            <h3><a href="/24-hour-plumber-bristol">24 Hour Plumber Bristol</a></h3>
+            <p>Round-the-clock plumbing help whenever you need it. Fully stocked vans for first-visit fixes, day or night.</p>
+            <a href="/24-hour-plumber-bristol" class="read-more">Learn more &#8594;</a>
+          </div>
+
+          <div class="service-card">
+            <span class="service-icon">&#128293;</span>
+            <h3><a href="/boiler-repair-bristol">Boiler Repair Bristol</a></h3>
+            <p>Gas Safe registered engineers for all boiler makes and models. Fast diagnosis and repair to restore your heating.</p>
+            <a href="/boiler-repair-bristol" class="read-more">Learn more &#8594;</a>
+          </div>
+
+          <div class="service-card">
+            <span class="service-icon">&#128703;</span>
+            <h3><a href="/blocked-drains-bristol">Blocked Drains Bristol</a></h3>
+            <p>Professional drain unblocking with high-pressure jetting and CCTV surveys. Fast, effective clearance guaranteed.</p>
+            <a href="/blocked-drains-bristol" class="read-more">Learn more &#8594;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-section">
+      <div class="container">
+        <h2>What Bristol Says About Us</h2>
+        <div class="reviews-aggregate">
+          <span class="reviews-score">4.9</span>
+          <div class="reviews-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>Based on 120+ Google reviews</p>
+        </div>
+        <div class="reviews-grid">
+          <div class="review-card">
+            <div class="review-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <blockquote>"Had a burst pipe at 2am and they were here within 40 minutes. Professional, friendly, and fixed everything quickly. Can't recommend them enough."</blockquote>
+            <div class="reviewer">
+              <div class="reviewer-avatar">J</div>
+              <div class="reviewer-info">
+                <span class="reviewer-name">James T.</span>
+                <span class="reviewer-source">Google Review</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <blockquote>"Called for a boiler breakdown on a Sunday morning. Engineer arrived promptly, diagnosed the issue, and had it repaired the same visit. Transparent pricing too."</blockquote>
+            <div class="reviewer">
+              <div class="reviewer-avatar">S</div>
+              <div class="reviewer-info">
+                <span class="reviewer-name">Sarah M.</span>
+                <span class="reviewer-source">Google Review</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <blockquote>"Blocked drain was causing a terrible smell. Their team used CCTV to find the problem and cleared it in no time. Very impressed with the service."</blockquote>
+            <div class="reviewer">
+              <div class="reviewer-avatar">D</div>
+              <div class="reviewer-info">
+                <span class="reviewer-name">David R.</span>
+                <span class="reviewer-source">Google Review</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-choose-us">
+      <div class="container">
+        <h2>Why Bristol Trusts Us for Emergency Plumbing</h2>
+        <p>Over fifteen years of delivering fast, professional plumbing services at fair prices across Bristol.</p>
+
+        <div class="benefits-grid">
+          <div class="benefit">
+            <h3>Rapid Response Times</h3>
+            <p>Our emergency plumbers reach most Bristol locations within 30-60 minutes. The nearest available plumber is always dispatched to you.</p>
+          </div>
+
+          <div class="benefit">
+            <h3>Transparent Pricing</h3>
+            <p>Clear, written quotes before any work begins. No call-out fees, no hidden charges — the price we quote is the price you pay.</p>
+          </div>
+
+          <div class="benefit">
+            <h3>Qualified Professionals</h3>
+            <p>Fully qualified, Gas Safe registered, insured, and background-checked. Ongoing training keeps our team at the top of their field.</p>
+          </div>
+
+          <div class="benefit">
+            <h3>Guaranteed Workmanship</h3>
+            <p>Every job backed by our comprehensive workmanship guarantee. If issues arise, we return to fix them at no extra cost.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="locations-served">
+      <div class="container">
+        <h2>Locations We Serve Across Bristol</h2>
+        <p>Our emergency plumbing services extend throughout Bristol and the surrounding region. We've built a network of local plumbers who know their communities inside out, ensuring rapid response times no matter where you're located.</p>
+
+        <div class="locations-grid">
+          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
+          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
+          <a href="/locations/east-bristol" class="location-link">East Bristol</a>
+          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
+          <a href="/locations/central-bristol" class="location-link">Central Bristol</a>
+        </div>
+
+        <p class="locations-note">Covering all Bristol postcodes including BS1-BS16, BS32 and BS34. <a href="/locations/">View all areas</a></p>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <div class="container">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>How quickly can you respond to a plumbing emergency in Bristol?</h3>
+            <p>We aim to reach most Bristol locations within 30-60 minutes of your call. Our emergency plumbers are strategically located across Bristol to ensure the fastest possible response times. During peak periods, we'll always give you an honest estimate of our arrival time.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Do you charge extra for emergency callouts at night or weekends?</h3>
+            <p>Our rates remain competitive regardless of when you call. While emergency callouts may have different pricing to standard appointments, we always provide transparent quotes before beginning any work. You'll never face unexpected charges on your bill.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Are your plumbers Gas Safe registered?</h3>
+            <p>Yes, all our plumbers who work on gas appliances are fully Gas Safe registered. We can provide registration details upon request for complete peace of mind. Safety is our absolute priority on every job we undertake.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What should I do while waiting for the emergency plumber?</h3>
+            <p>If you have a water leak, locate your stopcock and turn off the water supply to prevent further damage. For gas-related emergencies, turn off the gas at the meter if safe to do so and open windows for ventilation. Our phone team can provide specific guidance based on your situation.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Do you provide written quotes before starting work?</h3>
+            <p>Absolutely. We always provide a clear, written quote before commencing any work. This quote will detail the work required, all costs involved, and the expected timeframe. We won't start work until you've approved the quote and you understand exactly what you're paying for.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need an Emergency Plumber in Bristol?</h2>
+        <p>Don't let a plumbing emergency cause more damage to your property. Our expert team is standing by 24/7, ready to help.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call Now: 0117 428 0200</a>
+        </div>
+        <p class="cta-note">Available 24/7 including bank holidays</p>
       </div>
     </section>
   </main>
+
+  <script>
+    // Hero form submission
+    const heroForm = document.getElementById('heroContactForm');
+    const heroFormMessage = document.getElementById('hero-form-message');
+
+    heroForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitButton = heroForm.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Sending...';
+        submitButton.disabled = true;
+
+        const formData = new FormData(heroForm);
+        const payload = {
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            service: formData.get('service'),
+            website: formData.get('website'),
+            source_page: window.location.pathname
+        };
+
+        try {
+            const response = await fetch('/api/leads', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                heroFormMessage.style.display = 'block';
+                heroFormMessage.style.backgroundColor = '#d4edda';
+                heroFormMessage.style.color = '#155724';
+                heroFormMessage.style.border = '1px solid #c3e6cb';
+                heroFormMessage.textContent = 'Thank you! We\'ll call you back shortly.';
+                heroForm.reset();
+            } else {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || 'Form submission failed');
+            }
+        } catch (error) {
+            heroFormMessage.style.display = 'block';
+            heroFormMessage.style.backgroundColor = '#f8d7da';
+            heroFormMessage.style.color = '#721c24';
+            heroFormMessage.style.border = '1px solid #f5c6cb';
+            heroFormMessage.textContent = 'Sorry, there was an error. Please call us directly at 0117 428 0200.';
+        } finally {
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+        }
+    });
+  </script>
 </BaseLayout>
