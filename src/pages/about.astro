@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://bristolemergencyplumber.co.uk/#organization",
+    "name": "Bristol Emergency Plumber",
+    "url": "https://bristolemergencyplumber.co.uk/",
+    "description": "Professional emergency plumbing services in Bristol available 24/7. Gas Safe registered, fully insured plumbers serving Bristol and surrounding areas for over 15 years.",
+    "foundingDate": "2009",
+    "areaServed": {
+      "@type": "City",
+      "name": "Bristol",
+      "containedInPlace": { "@type": "Country", "name": "United Kingdom" }
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+44-117-428-0200",
+      "contactType": "customer service",
+      "availableLanguage": "English"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Future Space, North Gate (UWE), Filton Road",
+      "addressLocality": "Stoke Gifford",
+      "addressRegion": "Bristol",
+      "postalCode": "BS34 8RB",
+      "addressCountry": "GB"
+    },
+    "knowsAbout": ["Emergency Plumbing", "Boiler Repair", "Blocked Drains", "Leak Detection", "Gas Safe Services"]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://bristolemergencyplumber.co.uk/about" }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="About Us | Bristol Emergency Plumber | Local Trusted Plumbers"
+  description="About Bristol Emergency Plumber - trusted local plumbers serving Bristol for over 15 years. Gas Safe registered, fully insured, and committed to quality workmanship."
+  canonical="https://bristolemergencyplumber.co.uk/about"
+  ogTitle="About Bristol Emergency Plumber"
+  ogDescription="Learn about our team of experienced, Gas Safe registered plumbers serving Bristol and surrounding locations."
+  currentPage="about"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><span class="current">About Us</span></li>
+      </ol>
+    </div>
+  </nav>
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>About Bristol Emergency Plumber</h1>
+        <p>Trusted local plumbers serving Bristol and surrounding locations for over fifteen years.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Your Local Bristol Plumbing Experts</h2>
+        <p>Bristol Emergency Plumber was founded with a simple mission: to provide Bristol residents and businesses with reliable, professional plumbing services whenever they need them. Today, we offer a comprehensive range of services including <a href="/emergency-plumber-bristol">emergency plumbing</a>, <a href="/boiler-repair-bristol">boiler repair</a>, <a href="/blocked-drains-bristol">drain clearance</a>, and <a href="/24-hour-plumber-bristol">24-hour plumbing assistance</a>. Over the past fifteen years, we've grown from a small local operation into one of Bristol's most trusted plumbing services, but our commitment to quality workmanship and customer satisfaction remains unchanged.</p>
+
+        <p>What sets us apart is our genuine dedication to the Bristol community. We're not a faceless national company dispatching contractors from who-knows-where. Our plumbers live and work in Bristol. They know the local area, understand the specific plumbing challenges Bristol properties face, and take pride in serving their neighbours.</p>
+
+        <h3>Our Values</h3>
+        <p><strong>Reliability:</strong> When we say we'll be there, we mean it. Our commitment to punctuality and dependability has been the foundation of our reputation. Thousands of Bristol customers have trusted us in their homes, and we never take that trust for granted.</p>
+
+        <p><strong>Honesty:</strong> We believe in transparent, upfront pricing and honest advice. If a repair isn't necessary, we'll tell you. If there's a more cost-effective solution, we'll recommend it. We're building long-term relationships with our customers, not looking for quick profits.</p>
+
+        <p><strong>Quality:</strong> Every job we undertake, whether it's a simple tap repair or a complete bathroom installation, receives the same attention to quality. We use reputable materials, follow industry best practices, and guarantee our workmanship.</p>
+
+        <p><strong>Respect:</strong> We treat every customer's home with the respect it deserves. Our plumbers are courteous, tidy, and always mindful that they're working in your personal space.</p>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Our Qualifications</h2>
+        <p>All Bristol Emergency Plumber engineers hold relevant industry qualifications and maintain their skills through ongoing training. Our team includes:</p>
+
+        <ul>
+          <li><strong>Gas Safe Registered Engineers:</strong> All engineers who work on gas appliances are registered with Gas Safe, the official gas registration body for the United Kingdom.</li>
+          <li><strong>Fully Insured Professionals:</strong> We carry comprehensive public liability insurance and professional indemnity cover for your complete peace of mind.</li>
+          <li><strong>DBS Checked Staff:</strong> All our team members have undergone background checks, so you can feel comfortable welcoming them into your home.</li>
+        </ul>
+
+        <h3>Our Commitment to Bristol</h3>
+        <p>As a local business, we're invested in the Bristol community. We support local suppliers where possible, employ local people, and take pride in contributing to the local economy. When you choose Bristol Emergency Plumber, you're supporting a genuine local business.</p>
+
+        <p>We serve all Bristol locations including <a href="/locations/west-bristol">Clifton and Redland</a>, <a href="/locations/south-bristol">Southville and Bedminster</a>, <a href="/locations/east-bristol">Fishponds</a>, <a href="/locations/north-bristol">Horfield and Bradley Stoke</a>, and <a href="/locations/central-bristol">Central Bristol</a>. Explore our full <a href="/services/">range of plumbing services</a> or view all <a href="/locations/">locations we cover</a>.</p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Ready to Work With Us?</h2>
+        <p>Whether you need an emergency repair or want to discuss a planned project, we're here to help.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Contact Form</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

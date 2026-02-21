@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Bristol Emergency Plumber"
+  description="Page not found. Bristol Emergency Plumber - available 24/7 for all plumbing emergencies."
+  canonical="https://bristolemergencyplumber.co.uk/404"
+  robots="noindex"
+>
+  <main id="main-content" role="main">
+    <div class="error-content">
+      <p class="error-code" aria-hidden="true">404</p>
+      <h1>Page Not Found</h1>
+      <p>Sorry, the page you're looking for doesn't exist or has been moved. If you need an emergency plumber, call us directly or browse our services below.</p>
+      <div class="error-links">
+        <a href="tel:+441174280200" class="btn btn-primary">Call: 0117 428 0200</a>
+        <a href="/" class="btn btn-secondary">Back to Homepage</a>
+      </div>
+      <div style="margin-top: 2rem; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem;">Popular Pages</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 0.5rem;"><a href="/services/">Our Services</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/emergency-plumber-bristol">Emergency Plumber</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/boiler-repair-bristol">Boiler Repair</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/blocked-drains-bristol">Blocked Drains</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/locations/">Locations We Serve</a></li>
+          <li style="margin-bottom: 0.5rem;"><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

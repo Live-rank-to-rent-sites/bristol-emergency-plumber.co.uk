@@ -1,0 +1,223 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://bristolemergencyplumber.co.uk/contact" }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bristol Emergency Plumber",
+    "telephone": "+44-117-428-0200",
+    "email": "info@bristolemergencyplumber.co.uk",
+    "url": "https://bristolemergencyplumber.co.uk",
+    "address": { "@type": "PostalAddress", "addressLocality": "Bristol", "addressCountry": "GB" },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "16:00" }
+    ],
+    "areaServed": { "@type": "City", "name": "Bristol" },
+    "description": "Professional plumbing services throughout Bristol. Available 24/7 for emergencies."
+  }
+];
+---
+
+<BaseLayout
+  title="Contact Us | Bristol Emergency Plumber | 24/7 Availability"
+  description="Contact Bristol Emergency Plumber for all plumbing enquiries. Available 24/7 for emergencies. Call 0117 428 0200 or use our online contact form."
+  canonical="https://bristolemergencyplumber.co.uk/contact"
+  ogTitle="Contact Bristol Emergency Plumber"
+  ogDescription="Get in touch with Bristol's trusted emergency plumbing service. Available 24/7 for emergencies."
+  currentPage="contact"
+  jsonLd={jsonLd}
+>
+  <link slot="extraHead" rel="preconnect" href="https://maps.googleapis.com">
+  <link slot="extraHead" rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><span class="current">Contact</span></li>
+      </ol>
+    </div>
+  </nav>
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Contact Us</h1>
+        <p>Get in touch with Bristol Emergency Plumber for all your plumbing needs.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h2>Get in Touch</h2>
+            <p>Whether you have a <a href="/emergency-plumber-bristol">plumbing emergency</a>, need to schedule routine maintenance, or want a quote for a project, we're here to help. Choose the contact method that works best for you.</p>
+
+            <h3>Emergency Calls</h3>
+            <p>For plumbing emergencies requiring immediate attention, call our <a href="/24-hour-plumber-bristol">24/7 emergency line</a>:</p>
+            <p><a href="tel:+441174280200" style="font-size: 1.5rem; font-weight: bold; color: var(--secondary-color);">0117 428 0200</a></p>
+            <p>Our emergency team operates around the clock, every day of the year.</p>
+
+            <h3>General Enquiries</h3>
+            <p><strong>Phone:</strong> <a href="tel:+441174280200">0117 428 0200</a></p>
+            <p><strong>Email:</strong> <a href="mailto:info@bristolemergencyplumber.co.uk">info@bristolemergencyplumber.co.uk</a></p>
+
+            <h3>Office Hours</h3>
+            <p>Our office is staffed during the following hours for general enquiries:</p>
+            <ul>
+              <li>Monday - Friday: 8:00am - 6:00pm</li>
+              <li>Saturday: 9:00am - 4:00pm</li>
+              <li>Sunday: Emergency calls only</li>
+            </ul>
+            <p><em>Emergency plumbers are available 24/7 regardless of office hours.</em></p>
+
+            <h3>Service Coverage</h3>
+            <p>We provide plumbing services throughout Bristol and surrounding locations, covering <a href="/locations/north-bristol">North Bristol</a>, <a href="/locations/south-bristol">South Bristol</a>, <a href="/locations/east-bristol">East Bristol</a>, <a href="/locations/west-bristol">West Bristol</a>, and <a href="/locations/central-bristol">Central Bristol</a>. View our <a href="/locations/">full coverage</a> for more details.</p>
+          </div>
+
+          <div class="contact-form-section">
+            <h2>Send Us a Message</h2>
+            <p>For non-urgent enquiries, use the form below and we'll respond within 24 hours.</p>
+
+            <form class="contact-form" id="contactForm" aria-label="Send us a message">
+              <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+
+              <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required>
+              </div>
+
+              <div class="form-group">
+                <label for="postcode">Postcode</label>
+                <input type="text" id="postcode" name="postcode">
+              </div>
+
+              <div class="form-group">
+                <label for="service">Service Required</label>
+                <select id="service" name="service">
+                  <option value="">Please select...</option>
+                  <option value="emergency">Emergency Plumber</option>
+                  <option value="boiler">Boiler Repair</option>
+                  <option value="drains">Blocked Drains</option>
+                  <option value="general">General Plumbing</option>
+                  <option value="quote">Request a Quote</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="message">Your Message *</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+              </div>
+
+              <div id="form-message" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 5px;"></div>
+
+              <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Not Sure What You Need?</h2>
+        <p>If you're unsure which service you require, browse our specialist pages for more information or simply call us and we'll advise:</p>
+        <ul>
+          <li><a href="/emergency-plumber-bristol">Emergency Plumber</a> &ndash; for burst pipes, flooding, gas leaks, and urgent situations</li>
+          <li><a href="/boiler-repair-bristol">Boiler Repair</a> &ndash; for boiler breakdowns, heating issues, and Gas Safe servicing</li>
+          <li><a href="/blocked-drains-bristol">Blocked Drains</a> &ndash; for blocked toilets, slow drains, and sewage problems</li>
+          <li><a href="/24-hour-plumber-bristol">24 Hour Plumber</a> &ndash; for round-the-clock plumbing assistance</li>
+        </ul>
+        <p>You can also <a href="/about">learn more about our team</a> and our commitment to quality workmanship.</p>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="container">
+        <h2>Our Service Coverage</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">We provide plumbing services throughout Bristol and the surrounding region.</p>
+        <div class="map-container">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d79412.94890554045!2d-2.6504!3d51.4545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48718e824e07c22f%3A0x3e4a9c9fbb59c6b8!2sBristol%2C%20UK!5e0!3m2!1sen!2suk!4v1704067200000!5m2!1sen!2suk" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bristol service coverage map"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const formMessage = document.getElementById('form-message');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (form.querySelector('[name="website"]').value) return;
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Sending...';
+        submitButton.disabled = true;
+
+        const formData = new FormData(form);
+        const payload = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            service: formData.get('service'),
+            message: formData.get('message'),
+            website: formData.get('website'),
+            source_page: window.location.pathname
+        };
+
+        try {
+            const response = await fetch('/api/leads', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                formMessage.style.display = 'block';
+                formMessage.style.backgroundColor = '#d4edda';
+                formMessage.style.color = '#155724';
+                formMessage.style.border = '1px solid #c3e6cb';
+                formMessage.textContent = 'Thank you! Your message has been sent successfully. We\'ll respond within 24 hours.';
+                form.reset();
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            formMessage.style.display = 'block';
+            formMessage.style.backgroundColor = '#f8d7da';
+            formMessage.style.color = '#721c24';
+            formMessage.style.border = '1px solid #f5c6cb';
+            formMessage.textContent = 'Sorry, there was an error sending your message. Please try calling us directly at 0117 428 0200.';
+        } finally {
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+        }
+    });
+  </script>
+</BaseLayout>
