@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bristolemergencyplumber.co.uk/sitemap.xml
+Sitemap: https://bristolemergencyplumber.co.uk/sitemap-index.xml
 
 # Disallow admin and private directories
 Disallow: /admin/
