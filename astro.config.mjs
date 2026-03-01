@@ -1,10 +1,7 @@
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  output: 'static',
-  adapter: cloudflare(),
   site: 'https://bristolemergencyplumber.co.uk',
   integrations: [
     sitemap({
@@ -17,4 +14,9 @@ export default defineConfig({
         !page.includes('/accessibility'),
     }),
   ],
+  output: 'static',
+  build: {
+    format: 'directory',
+  },
+  trailingSlash: 'always',
 });
