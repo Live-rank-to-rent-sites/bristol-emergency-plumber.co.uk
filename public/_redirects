@@ -1,5 +1,10 @@
 # Cloudflare Pages redirects file
 
+# www to non-www redirect (301 permanent)
+https://www.bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
+http://www.bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
+http://bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
+
 # Current pages - .html to clean URL redirects
 /24-hour-plumber-bristol.html /24-hour-plumber-bristol 301
 /about.html /about 301
