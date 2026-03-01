@@ -83,6 +83,37 @@ async function handlePost(request, env) {
     });
   }
 
+  // Input length validation
+  if (typeof payload.name !== 'string' || payload.name.length > 100) {
+    return new Response(JSON.stringify({ message: 'Name must be 100 characters or fewer.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  if (typeof payload.email !== 'string' || payload.email.length > 254) {
+    return new Response(JSON.stringify({ message: 'Email must be 254 characters or fewer.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Phone format: UK numbers — digits, spaces, dashes, optional leading +
+  const phoneRegex = /^\+?[\d\s\-]{7,20}$/;
+  if (typeof payload.phone !== 'string' || !phoneRegex.test(payload.phone.trim())) {
+    return new Response(JSON.stringify({ message: 'Please enter a valid UK phone number.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Optional message length
+  if (payload.message && (typeof payload.message !== 'string' || payload.message.length > 2000)) {
+    return new Response(JSON.stringify({ message: 'Message must be 2000 characters or fewer.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   // Rate limiting
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('x-forwarded-for') || '';
   const ipHash = await hashIp(ip);
