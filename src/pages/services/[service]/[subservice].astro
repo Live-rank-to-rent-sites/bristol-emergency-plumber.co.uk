@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { services, getServiceBySlug, getSubserviceBySlug } from '../../../data/services';
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+  services.forEach(service => {
+    service.subservices.forEach(subservice => {
+      paths.push({
+        params: { service: service.slug, subservice: subservice.slug },
+        props: { service, subservice }
+      });
+    });
+  });
+  return paths;
+}
+
+const { service, subservice } = Astro.props;
+
+const capitalizeWords = (str: string) => {
+  return str.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
+
+const serviceName = capitalizeWords(service.slug);
+const subserviceName = subservice.name;
+
+const pageTitle = `${subserviceName} Bristol | Professional ${serviceName} Service`;
+const pageDescription = `Expert ${subserviceName.toLowerCase()} services in Bristol. Professional, fast response, available 24/7.`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": `${subserviceName} in Bristol`,
+    "serviceType": subserviceName,
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Bristol Emergency Plumber",
+      "telephone": "+44-117-428-0200"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Bristol"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://bristolemergencyplumber.co.uk/services/" },
+      { "@type": "ListItem", "position": 3, "name": serviceName, "item": `https://bristolemergencyplumber.co.uk/services/${service.slug}/` },
+      { "@type": "ListItem", "position": 4, "name": subserviceName, "item": `https://bristolemergencyplumber.co.uk/services/${service.slug}/${subservice.slug}/` }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`https://bristolemergencyplumber.co.uk/services/${service.slug}/${subservice.slug}/`}
+  ogTitle={`${subserviceName} Bristol`}
+  ogDescription={`Professional ${subserviceName.toLowerCase()} services in Bristol`}
+  currentPage="services"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services/">Services</a></li>
+        <li><a href={`/services/${service.slug}/`}>{serviceName}</a></li>
+        <li><span class="current">{subserviceName}</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>{subserviceName} Bristol</h1>
+        <p>Professional {subserviceName.toLowerCase()} services available 24 hours a day across Bristol.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Expert {subserviceName} Services in Bristol</h2>
+        <p>Bristol Emergency Plumber provides specialist {subserviceName.toLowerCase()} services throughout Bristol. Our qualified engineers handle {subserviceName.toLowerCase()} situations with expertise and professionalism. Whether you need routine service or emergency assistance, we're available 24/7.</p>
+
+        <h3>Our {subserviceName} Process</h3>
+        <ol>
+          <li><strong>Diagnosis:</strong> We assess the situation and identify the exact issue</li>
+          <li><strong>Solution:</strong> We explain our recommended approach and pricing</li>
+          <li><strong>Resolution:</strong> We complete the work with professionalism and care</li>
+          <li><strong>Follow-up:</strong> We ensure you're satisfied and advise on prevention</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Why Choose Us for {subserviceName}?</h2>
+        <div class="benefits-grid">
+          <div class="benefit">
+            <h3>Specialist Expertise</h3>
+            <p>Our engineers specialise in {subserviceName.toLowerCase()} and handle these situations regularly.</p>
+          </div>
+          <div class="benefit">
+            <h3>Fast Response</h3>
+            <p>We respond quickly across Bristol with typical 30-60 minute response times.</p>
+          </div>
+          <div class="benefit">
+            <h3>Transparent Pricing</h3>
+            <p>Clear quotes before work begins with no hidden charges or surprises.</p>
+          </div>
+          <div class="benefit">
+            <h3>24/7 Availability</h3>
+            <p>Available around the clock, every day of the year for emergencies.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Service Areas</h2>
+        <p>We provide {subserviceName.toLowerCase()} services throughout Bristol:</p>
+        <div class="locations-grid">
+          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
+          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
+          <a href="/locations/east-bristol" class="location-link">East Bristol</a>
+          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
+          <a href="/locations/central-bristol" class="location-link">Central Bristol</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need {subserviceName} in Bristol?</h2>
+        <p>Call us now for professional {subserviceName.toLowerCase()} services. Available 24/7.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call Now: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Send Us a Message</a>
+        </div>
+        <p class="cta-note">Available 24/7 - Average response time: 30-60 minutes</p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

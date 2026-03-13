@@ -32,11 +32,9 @@ http://bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:sp
 # North Bristol (BS7, BS9, BS10, BS32, BS34)
 /locations/bishopston.html /locations/north-bristol 301
 /locations/horfield.html /locations/north-bristol 301
-/locations/filton.html /locations/north-bristol 301
 /locations/southmead.html /locations/north-bristol 301
 /locations/henleaze.html /locations/north-bristol 301
 /locations/westbury-on-trym.html /locations/north-bristol 301
-/locations/bradley-stoke.html /locations/north-bristol 301
 /locations/stapleton.html /locations/north-bristol 301
 
 # South Bristol (BS3, BS4, BS13)
@@ -55,7 +53,6 @@ http://bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:sp
 /locations/eastville.html /locations/east-bristol 301
 /locations/st-george.html /locations/east-bristol 301
 /locations/speedwell.html /locations/east-bristol 301
-/locations/kingswood.html /locations/east-bristol 301
 
 # Central Bristol (BS1, BS2)
 /locations/montpelier.html /locations/central-bristol 301

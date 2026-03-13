@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Boiler Maintenance Tips: Keep Your Heating Efficient All Winter",
+    "description": "Essential boiler maintenance tips to prevent breakdowns and maintain efficiency throughout winter.",
+    "author": {
+      "@type": "Organization",
+      "name": "Bristol Emergency Plumber"
+    },
+    "datePublished": "2024-03-05",
+    "image": "https://bristolemergencyplumber.co.uk/assets/images/blog-boiler-maintenance.webp"
+  }
+];
+---
+
+<BaseLayout
+  title="Boiler Maintenance Tips Bristol | Bristol Emergency Plumber"
+  description="Essential boiler maintenance to prevent breakdowns. Annual servicing, pressure checks, and efficiency optimization from Bristol's Gas Safe engineers."
+  canonical="https://bristolemergencyplumber.co.uk/blog/boiler-maintenance-tips-bristol/"
+  ogTitle="Boiler Maintenance Tips: Keep Your Heating Efficient"
+  ogDescription="Gas Safe boiler maintenance tips to prevent winter breakdowns and maintain efficiency"
+  currentPage="blog"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><a href="/blog/">Blog</a></li><li><span class="current">Boiler Maintenance Tips</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <article>
+      <section class="page-hero">
+        <div class="container">
+          <h1>Boiler Maintenance Tips: Keep Your Heating Efficient All Winter</h1>
+          <p class="article-meta">Published: March 2024 • Bristol Emergency Plumber</p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="container">
+          <p>Boiler breakdowns strike at the worst times—usually during cold weather when you most need heating. Regular maintenance prevents emergencies, maintains efficiency, and extends boiler lifespan. Here's what you need to know about keeping your boiler healthy.</p>
+
+          <h2>Annual Servicing: Non-Negotiable</h2>
+          <p>Annual professional boiler servicing is essential, not optional. Gas Safe registered engineers perform comprehensive inspections identifying problems before they become emergencies. Servicing includes safety checks, efficiency assessment, and preventative maintenance. Many manufacturers require annual servicing to maintain warranty coverage—skipping this can void your protection.</p>
+
+          <h2>When to Service</h2>
+          <p>Service your boiler annually before winter. Summer servicing means problems are identified and fixed before heating season demands arrive. If your boiler breaks down in January, you're waiting for emergency repairs rather than preventative maintenance.</p>
+
+          <h2>System Pressure Checks</h2>
+          <p>Combination boilers depend on correct system pressure. Low pressure indicates leaks or failed components. You can check your boiler's pressure gauge (usually 1-2 bar when cold). If pressure is consistently low, call for professional assessment. High pressure indicates expansion tank problems. Either extreme needs attention.</p>
+
+          <h2>Bleeding Radiators</h2>
+          <p>Air trapped in radiators prevents efficient heating. You can bleed radiators yourself using a radiator key (available cheaply from hardware stores). As heating season approaches, identify cold radiators and bleed them. This improves efficiency and reduces boiler strain.</p>
+
+          <h2>Thermostat Optimization</h2>
+          <p>Modern programmable thermostats significantly reduce energy use while maintaining comfort. Set heating to turn off when you're away, and adjust temperatures seasonally. Each degree reduction saves approximately 3% on heating costs. A £20 programmable thermostat can save £100+ annually.</p>
+
+          <h2>Recognizing Warning Signs</h2>
+          <p>Early intervention prevents catastrophic failures. Watch for:</p>
+          <ul>
+            <li>Loss of pressure (pressure gauge dropping)</li>
+            <li>Unusual sounds (banging, whistling, gurgling)</li>
+            <li>Leaks around the boiler</li>
+            <li>Pilot light frequently going out</li>
+            <li>Water temperature inconsistency</li>
+            <li>Longer heating-up times</li>
+          </ul>
+
+          <h2>Pipe Corrosion Prevention</h2>
+          <p>Boiler systems can develop sludge and corrosion internally. Chemical treatments inhibit corrosion, improving efficiency and extending system lifespan. Your engineer can recommend appropriate treatments during servicing.</p>
+
+          <h2>Boiler Age Considerations</h2>
+          <p>Boilers typically last 10-15 years. Repairs become increasingly frequent as boilers age. If your boiler is approaching this age and requires frequent repairs, replacement often makes more financial sense than continued fixing. Modern boilers are significantly more efficient, potentially saving hundreds annually on energy costs.</p>
+
+          <h2>Powerflush Improvements</h2>
+          <p>Over time, heating systems accumulate sludge reducing efficiency. Professional powerflush cleaning removes this buildup, improving system efficiency and boiler performance. This is particularly beneficial in older systems that haven't been cleaned previously.</p>
+
+          <h2>Avoid DIY Gas Work</h2>
+          <p>Gas work requires Gas Safe registration for safety reasons. Never attempt repairs yourself or use unqualified engineers. Gas escapes cause poisoning and explosions. Only Gas Safe registered engineers should work on gas equipment.</p>
+
+          <h2>Emergency Preparedness</h2>
+          <p>If your boiler fails during winter, don't panic. Contact us immediately for emergency repair. While waiting, use portable heaters and close doors to keep warm areas contained. Have emergency contact information readily available.</p>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="container">
+          <h2>Professional Boiler Service</h2>
+          <p>Schedule your annual boiler service now and avoid winter emergencies.</p>
+          <div class="cta-buttons">
+            <a href="/boiler-repair-bristol" class="btn btn-primary btn-large">Boiler Services</a>
+            <a href="tel:+441174280200" class="btn btn-secondary btn-large">Call: 0117 428 0200</a>
+          </div>
+        </div>
+      </section>
+    </article>
+  </main>
+</BaseLayout>

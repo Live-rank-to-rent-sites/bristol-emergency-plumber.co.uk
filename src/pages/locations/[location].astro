@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { surroundingLocations, getLocationBySlug } from '../../data/surroundingLocations';
+import { services } from '../../data/services';
+
+export function getStaticPaths() {
+  return surroundingLocations.map(location => ({
+    params: { location: location.slug },
+    props: { location }
+  }));
+}
+
+const { location } = Astro.props;
+
+const pageTitle = `Emergency Plumber in ${location.name} | Professional Plumbing Services`;
+const pageDescription = `Emergency plumber in ${location.name} (${location.postcode}). Professional plumbing services ${location.distance} from Bristol. 24/7 response.`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": `Emergency Plumber ${location.name}`,
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Bristol Emergency Plumber",
+      "telephone": "+44-117-428-0200",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": location.name,
+        "postalCode": location.postcode,
+        "addressCountry": "GB"
+      }
+    },
+    "areaServed": location.name,
+    "description": `Professional plumbing services in ${location.name}`
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
+      { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://bristolemergencyplumber.co.uk/locations/" },
+      { "@type": "ListItem", "position": 3, "name": location.name, "item": `https://bristolemergencyplumber.co.uk/locations/${location.slug}/` }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`https://bristolemergencyplumber.co.uk/locations/${location.slug}/`}
+  ogTitle={`Emergency Plumber in ${location.name}`}
+  ogDescription={`Professional plumbing services in ${location.name} - 24/7 emergency response`}
+  currentPage="locations"
+  jsonLd={jsonLd}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol>
+        <li><a href="/">Home</a></li><li><a href="/locations/">Locations</a></li><li><span class="current">{location.name}</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Emergency Plumber in {location.name}</h1>
+        <p>{location.distance} from Bristol • Postcode: {location.postcode}</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>Your Local {location.name} Plumbing Experts</h2>
+        <p>{location.description}</p>
+
+        <h3>Why Choose Bristol Emergency Plumber for {location.name}?</h3>
+        <ul>
+          <li>Professional, qualified, Gas Safe registered engineers</li>
+          <li>Fast response times for emergencies</li>
+          <li>Transparent pricing with no hidden charges</li>
+          <li>24/7 availability throughout the year</li>
+          <li>Experience with {location.name}'s diverse property types</li>
+        </ul>
+
+        <h3>Key Characteristics of Properties in {location.name}</h3>
+        <ul>
+          {location.highlights.map(highlight => (
+            <li>{highlight}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="content-section alt">
+      <div class="container">
+        <h2>Services Available in {location.name}</h2>
+        <p>We provide comprehensive plumbing services throughout {location.name}:</p>
+        <div class="services-grid">
+          {services.map(service => (
+            <div class="service-card">
+              <h3><a href={`/locations/${location.slug}/${service.slug}`}>{service.name}</a></h3>
+              <p>{service.description}</p>
+            </div>
+          ))}
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem;"><a href="/services/">View all plumbing services</a></p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Need a Plumber in {location.name}?</h2>
+        <p>Professional plumbing services available 24/7. Call us now for immediate assistance.</p>
+        <div class="cta-buttons">
+          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call Now: 0117 428 0200</a>
+          <a href="/contact" class="btn btn-secondary btn-large">Request a Callback</a>
+        </div>
+        <p class="cta-note">Available 24/7 - Fast response times</p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
