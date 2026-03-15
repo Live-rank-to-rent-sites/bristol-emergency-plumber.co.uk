@@ -58,3 +58,4 @@ http://bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:sp
 /locations/montpelier.html /locations/central-bristol 301
 /locations/st-pauls.html /locations/central-bristol 301
 /locations/st-werburghs.html /locations/central-bristol 301
+/sitemap.xml /sitemap-index.xml 301
