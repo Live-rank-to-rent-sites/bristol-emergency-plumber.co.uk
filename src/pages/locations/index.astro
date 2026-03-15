@@ -1,162 +1,196 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroWithLeadForm from '../../components/HeroWithLeadForm.astro';
+import { BRAND } from '../../data/brand';
+import { LOCATIONS } from '../../data/locations';
+import { SERVICES } from '../../data/services';
+import { getBreadcrumbSchema, getWebPageSchema, serializeSchema } from '../../utils/schema';
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
-      { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://bristolemergencyplumber.co.uk/locations/" }
-    ]
-  }
+// SEO-optimized title (50-60 chars)
+const title = `Locations | Plumbing Services Bristol & Surrounding Areas`;
+
+// SEO-optimized description (120-155 chars) with benefits and CTA
+const description = `Professional plumbing services across Bristol, Bath, Clifton, Portishead, Clevedon and beyond. Gas Safe engineers, local response, 24/7. Call ${BRAND.phoneFormatted}.`;
+
+const breadcrumbItems = [
+  { name: "Home", url: "/" },
+  { name: "Locations", url: "/locations/" }
 ];
+
+const breadcrumbSchema = getBreadcrumbSchema(breadcrumbItems);
+const webPageSchema = getWebPageSchema({
+  url: '/locations/',
+  name: title,
+  description: description,
+  breadcrumb: breadcrumbItems
+});
+
+const combinedPageSchema = [breadcrumbSchema, webPageSchema];
 ---
 
-<BaseLayout
-  title="Locations We Serve | Bristol Emergency Plumber"
-  description="Bristol Emergency Plumber serves all Bristol areas. Find local plumbers in North, South, East, West and Central Bristol. 24/7 emergency service with fast response times."
-  canonical="https://bristolemergencyplumber.co.uk/locations/"
-  ogTitle="Bristol Plumber - Locations We Serve"
-  ogDescription="Professional plumbing services across all Bristol areas. Fast response times throughout the city."
-  ogImage="https://bristolemergencyplumber.co.uk/assets/images/hero-locations-bristol.webp"
-  currentPage="locations"
-  jsonLd={jsonLd}
->
-  <link slot="extraHead" rel="preload" as="image" href="/assets/images/hero-locations-bristol.webp" type="image/webp">
-  <link slot="extraHead" rel="preconnect" href="https://maps.googleapis.com">
-  <link slot="extraHead" rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+<BaseLayout title={title} description={description} canonical="/locations/" schema={combinedPageSchema}>
+  <HeroWithLeadForm
+    title="Areas We Cover"
+    description="Professional plumbing services across Bristol and surrounding areas. Fast response, Gas Safe registered engineers, 24/7 availability."
+    formId="locations-lead-form"
+    source="locations"
+  />
 
-  <nav class="breadcrumb" aria-label="Breadcrumb">
-    <div class="container">
-      <ol>
-        <li><a href="/">Home</a></li><li><span class="current">Locations</span></li>
-      </ol>
+  <!-- Introduction -->
+  <section class="section-padding">
+    <div class="container-wide px-4">
+      <nav class="text-sm mb-6" aria-label="Breadcrumb">
+        <a href="/" class="text-primary hover:underline">Home</a>
+        <span class="mx-2 text-muted-foreground">/</span>
+        <span class="text-muted-foreground">Locations</span>
+      </nav>
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-6">
+          {BRAND.brandName} is proud to serve homeowners and businesses throughout {BRAND.serviceAreaLabel}. Whether you're facing a burst pipe in central Bristol, a boiler breakdown in Clifton, or a blocked drain in Bath, our experienced team is just a phone call away.
+        </p>
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          We offer fast response times across all our service areas, with most callouts attended the same day. Our local knowledge means we understand the specific plumbing challenges faced by properties in different parts of {BRAND.serviceAreaLabel}.
+        </p>
+      </div>
     </div>
-  </nav>
+  </section>
 
-  <main id="main-content" role="main">
-    <section class="page-hero page-hero--locations">
-      <div class="container">
-        <h1>Locations We Serve</h1>
-        <p>Professional plumbing services throughout Bristol and surrounding areas</p>
-      </div>
-    </section>
+  <!-- Featured Areas -->
+  {['bristol', 'clifton', 'bath', 'portishead'].map((slug, index) => {
+    const location = LOCATIONS.find(l => l.slug === slug);
+    if (!location) return null;
+    const bgClass = index % 2 === 0 ? 'bg-muted/30' : '';
+    return (
+      <section class={`section-padding ${bgClass}`}>
+        <div class="container-wide px-4">
+          <div class="max-w-4xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <h2 class="text-3xl md:text-4xl font-bold">{location.name}</h2>
+            </div>
 
-    <section class="content-section">
-      <div class="container">
-        <h2>Bristol-Wide Plumbing Coverage</h2>
-        <p>Our team of experienced, Gas Safe registered plumbers provides comprehensive coverage across Bristol and the surrounding region. With engineers strategically positioned throughout the city, we typically reach most locations within 30-60 minutes for emergencies.</p>
+            <p class="text-lg text-muted-foreground leading-relaxed mb-8">
+              We provide comprehensive plumbing services throughout {location.name} and the surrounding areas. Our experienced engineers understand the local housing stock and respond quickly to any plumbing emergency.
+            </p>
 
-        <p>We've organised our coverage into five regions, each served by plumbers who specialise in the unique characteristics of that area—from period properties in the west to modern developments in the north.</p>
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+              <a
+                href={`/locations/${location.slug}/emergency-plumber/`}
+                class="p-4 bg-card rounded-lg border hover:border-primary transition-colors group"
+              >
+                <h3 class="font-semibold text-lg group-hover:text-primary transition-colors">Emergency Plumber {location.name}</h3>
+                <p class="text-sm text-muted-foreground mt-2">Fast response for urgent plumbing</p>
+              </a>
 
-        <div class="regions-grid">
-          <div class="region-card">
-            <img src="/assets/images/location-north-bristol.webp" alt="Emergency plumber service area covering North Bristol including Horfield, Filton and Bishopston" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="North Bristol plumbing service area">
-            <h3><a href="/locations/north-bristol">North Bristol</a></h3>
-            <p class="postcodes">BS7, BS9, BS10, BS32, BS34</p>
-            <p>Covering Horfield, Filton, Southmead, Bishopston, Henleaze, Westbury-on-Trym and Bradley Stoke. From 1930s semis to modern new-builds, our North Bristol team handles it all.</p>
-            <ul>
-              <li>Inter-war housing specialists</li>
-              <li>New-build snagging experts</li>
-              <li>Typical response: 20-40 mins</li>
-            </ul>
-            <a href="/locations/north-bristol" class="btn btn-secondary">North Bristol Plumbers</a>
-          </div>
+              <a
+                href={`/locations/${location.slug}/boiler-repair/`}
+                class="p-4 bg-card rounded-lg border hover:border-primary transition-colors group"
+              >
+                <h3 class="font-semibold text-lg group-hover:text-primary transition-colors">Boiler Repair {location.name}</h3>
+                <p class="text-sm text-muted-foreground mt-2">All makes and models covered</p>
+              </a>
 
-          <div class="region-card">
-            <img src="/assets/images/location-south-bristol.webp" alt="Emergency plumber service area covering South Bristol including Bedminster, Knowle and Brislington" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="South Bristol plumbing service area">
-            <h3><a href="/locations/south-bristol">South Bristol</a></h3>
-            <p class="postcodes">BS3, BS4, BS13</p>
-            <p>Covering Bedminster, Southville, Knowle, Brislington, Hartcliffe, Withywood, Ashton and Totterdown. Strong community connections and diverse housing expertise.</p>
-            <ul>
-              <li>Victorian terrace experts</li>
-              <li>Landlord services available</li>
-              <li>Typical response: 20-35 mins</li>
-            </ul>
-            <a href="/locations/south-bristol" class="btn btn-secondary">South Bristol Plumbers</a>
-          </div>
+              <a
+                href={`/locations/${location.slug}/blocked-drains/`}
+                class="p-4 bg-card rounded-lg border hover:border-primary transition-colors group"
+              >
+                <h3 class="font-semibold text-lg group-hover:text-primary transition-colors">Blocked Drains {location.name}</h3>
+                <p class="text-sm text-muted-foreground mt-2">Same-day drain clearance</p>
+              </a>
+            </div>
 
-          <div class="region-card">
-            <img src="/assets/images/location-east-bristol.webp" alt="Emergency plumber service area covering East Bristol including Fishponds, Easton and St George" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="East Bristol plumbing service area">
-            <h3><a href="/locations/east-bristol">East Bristol</a></h3>
-            <p class="postcodes">BS5, BS15, BS16</p>
-            <p>Covering Fishponds, Easton, Eastville, St George, Speedwell, Kingswood and Stapleton. Diverse neighbourhoods with varied housing stock.</p>
-            <ul>
-              <li>HMO compliance specialists</li>
-              <li>Hard water solutions</li>
-              <li>Typical response: 15-35 mins</li>
-            </ul>
-            <a href="/locations/east-bristol" class="btn btn-secondary">East Bristol Plumbers</a>
-          </div>
-
-          <div class="region-card">
-            <img src="/assets/images/location-west-bristol.webp" alt="Emergency plumber service area covering West Bristol including Clifton, Redland and Cotham" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="West Bristol plumbing service area">
-            <h3><a href="/locations/west-bristol">West Bristol</a></h3>
-            <p class="postcodes">BS6, BS8</p>
-            <p>Covering Clifton, Hotwells, Redland, Cotham and Kingsdown. Period property specialists with listed building experience.</p>
-            <ul>
-              <li>Georgian &amp; Victorian experts</li>
-              <li>Listed building experience</li>
-              <li>Typical response: 20-30 mins</li>
-            </ul>
-            <a href="/locations/west-bristol" class="btn btn-secondary">West Bristol Plumbers</a>
-          </div>
-
-          <div class="region-card">
-            <img src="/assets/images/location-central-bristol.webp" alt="Emergency plumber service area covering Central Bristol including city centre, Montpelier and St Pauls" width="600" height="400" loading="lazy" decoding="async" class="region-card__image" title="Central Bristol plumbing service area">
-            <h3><a href="/locations/central-bristol">Central Bristol</a></h3>
-            <p class="postcodes">BS1, BS2</p>
-            <p>Covering Montpelier, St Pauls, St Werburghs, Stokes Croft, Old Market and City Centre. Commercial and residential expertise.</p>
-            <ul>
-              <li>Commercial plumbing services</li>
-              <li>Fastest response times</li>
-              <li>Typical response: 10-25 mins</li>
-            </ul>
-            <a href="/locations/central-bristol" class="btn btn-secondary">Central Bristol Plumbers</a>
+            <a
+              href={`/locations/${location.slug}/`}
+              class="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
+            >
+              View all {location.name} plumbing services
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
           </div>
         </div>
+      </section>
+    );
+  })}
 
-        <h2>Not Sure Which Region?</h2>
-        <p>Don't worry about boundaries—just call us and we'll send the nearest available plumber to your location. Our dispatch system automatically identifies the best engineer for your postcode. To learn more about what we can help with, explore our <a href="/services/">full range of plumbing services</a> or <a href="/contact">get in touch</a> to discuss your requirements.</p>
+  <!-- All Areas Grid -->
+  <section class="section-padding bg-muted/30">
+    <div class="container-wide px-4">
+      <div class="max-w-4xl mx-auto text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">All Areas We Cover</h2>
+        <p class="text-lg text-muted-foreground">
+          Click on any location below to see our full range of plumbing services available in your area.
+        </p>
+      </div>
 
-        <h2>Surrounding Areas We Serve</h2>
-        <p>Beyond Bristol's regions, we also provide plumbing services to surrounding towns and areas. Explore our coverage in the surrounding region:</p>
-        <div class="locations-grid">
-          <a href="/locations/bath" class="location-link">Bath</a>
-          <a href="/locations/keynsham" class="location-link">Keynsham</a>
-          <a href="/locations/clevedon" class="location-link">Clevedon</a>
-          <a href="/locations/portishead" class="location-link">Portishead</a>
-          <a href="/locations/nailsea" class="location-link">Nailsea</a>
-          <a href="/locations/yate" class="location-link">Yate</a>
-          <a href="/locations/thornbury" class="location-link">Thornbury</a>
-          <a href="/locations/bradley-stoke" class="location-link">Bradley Stoke</a>
-          <a href="/locations/filton" class="location-link">Filton</a>
-          <a href="/locations/kingswood" class="location-link">Kingswood</a>
-          <a href="/locations/warmley" class="location-link">Warmley</a>
-          <a href="/locations/mangotsfield" class="location-link">Mangotsfield</a>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
+        {LOCATIONS.map((location) => (
+          <a
+            href={`/locations/${location.slug}/`}
+            class="flex items-center gap-2 p-4 bg-card rounded-lg card-elevated hover:scale-[1.02] transition-transform"
+          >
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span class="font-medium">{location.name}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Local -->
+  <section class="section-padding">
+    <div class="container-wide px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Why Choose a Local Plumber?</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex gap-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0 mt-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+            <div>
+              <h3 class="font-semibold text-lg mb-2">Faster Response Times</h3>
+              <p class="text-muted-foreground">Being based in {BRAND.serviceAreaLabel} means we can reach you quickly — often same day for emergencies.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0 mt-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+            <div>
+              <h3 class="font-semibold text-lg mb-2">Local Knowledge</h3>
+              <p class="text-muted-foreground">We understand the specific plumbing systems and common issues in Bristol's Victorian, Georgian, and modern properties.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0 mt-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+            <div>
+              <h3 class="font-semibold text-lg mb-2">Gas Safe Registered</h3>
+              <p class="text-muted-foreground">All gas and boiler work is carried out by fully registered Gas Safe engineers — your legal right and protection.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0 mt-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+            <div>
+              <h3 class="font-semibold text-lg mb-2">Building Local Trust</h3>
+              <p class="text-muted-foreground">Our reputation is built on recommendations from satisfied customers across Bristol and the surrounding areas.</p>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="map-section">
-      <div class="container">
-        <h2>Our Coverage Map</h2>
-        <div class="map-container">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d79412.94890554045!2d-2.6504!3d51.4545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48718e824e07c22f%3A0x3e4a9c9fbb59c6b8!2sBristol%2C%20UK!5e0!3m2!1sen!2suk!4v1704067200000!5m2!1sen!2suk" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bristol plumber coverage map"></iframe>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-section">
-      <div class="container">
-        <h2>Need a Plumber in Bristol?</h2>
-        <p>Wherever you are in Bristol, our team is ready to help with fast, professional plumbing services.</p>
-        <div class="cta-buttons">
-          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
-        </div>
-        <p class="cta-note">24/7 emergency service across all Bristol locations</p>
-      </div>
-    </section>
-  </main>
+  <!-- CTA Section -->
+  <section class="section-padding bg-primary text-primary-foreground">
+    <div class="container-wide px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Ready to Get Your Plumbing Sorted?
+      </h2>
+      <p class="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+        Whether you're in Bristol, Bath, Clifton, or anywhere across {BRAND.serviceAreaLabel}, our local team is just a phone call away.
+      </p>
+      <a href={`tel:${BRAND.phone}`} class="bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-white/90 transition-all text-lg inline-block">
+        Call {BRAND.phoneFormatted}
+      </a>
+    </div>
+  </section>
 </BaseLayout>

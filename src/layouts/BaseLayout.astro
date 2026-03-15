@@ -1,90 +1,244 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import StickyCtaBar from '../components/StickyCtaBar.astro';
-import '../styles/style.css';
+import '../styles/site.css';
+import { BRAND } from '../data/brand';
+import { SERVICES } from '../data/services';
+import { LOCATIONS } from '../data/locations';
+import { serializeSchema } from '../utils/schema';
 
 interface Props {
-  title: string;
-  description: string;
-  canonical: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: string;
-  robots?: string;
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  schema?: object | object[];
+  noindex?: boolean;
   keywords?: string;
-  author?: string;
-  jsonLd?: object[];
-  currentPage?: string;
 }
 
-const {
-  title,
-  description,
-  canonical,
-  ogTitle = title,
-  ogDescription = description,
-  ogImage = 'https://bristolemergencyplumber.co.uk/assets/images/hero-emergency-plumber-bristol.webp',
-  robots = 'index, follow',
-  keywords,
-  author = 'Bristol Emergency Plumber',
-  jsonLd = [],
-  currentPage = '',
-} = Astro.props;
+const defaultTitle = `${BRAND.brandName} | 24/7 Emergency Plumbing Services`;
+const defaultDescription = `Emergency plumber, boiler repair, blocked drains, and gas safety across ${BRAND.serviceAreaLabel}. Gas Safe registered engineers, fixed pricing. Call ${BRAND.phoneFormatted}.`;
+
+const { title = defaultTitle, description = defaultDescription, canonical, image, schema, noindex = false, keywords } = Astro.props;
+const siteUrl = `https://${BRAND.domain}`;
+const canonicalUrl = canonical ? `${siteUrl}${canonical}` : `${siteUrl}${Astro.url.pathname}`;
+const defaultOgImage = `${siteUrl}/images/og-default.jpg`;
+const ogImage = image ? `${siteUrl}${image}` : defaultOgImage;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-GB">
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
-    <link rel="icon" href="/favicon.ico" sizes="32x32">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content={description}>
-    {keywords && <meta name="keywords" content={keywords}>}
-    <meta name="robots" content={robots}>
-    <meta name="author" content={author}>
-    <link rel="canonical" href={canonical}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en-gb" href={canonicalUrl} />
 
-    <meta property="og:title" content={ogTitle}>
-    <meta property="og:description" content={ogDescription}>
-    <meta property="og:url" content={canonical}>
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="en_GB">
-    <meta property="og:image" content={ogImage}>
-    <meta property="og:image:width" content="1920">
-    <meta property="og:image:height" content="800">
-    <meta property="og:image:type" content="image/webp">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={BRAND.brandName} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_GB" />
 
-    {/* Critical CSS inlined for faster render */}
-    <style>
-        :root{--primary-color:#1a5f7a;--primary-dark:#134b61;--secondary-color:#e63946;--accent-color:#f4a261;--text-color:#2d3436;--text-light:#636e72;--bg-light:#f8f9fa;--white:#fff;--shadow:0 2px 10px rgba(0,0,0,.1)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;font-size:16px;line-height:1.6;color:var(--text-color);background-color:var(--white);padding-bottom:56px}.container{max-width:1200px;margin:0 auto;padding:0 20px}a{color:var(--primary-color);text-decoration:none}h1,h2,h3{font-weight:700;line-height:1.3;margin-bottom:1rem;color:var(--text-color)}h1{font-size:2.5rem}.btn{display:inline-block;padding:14px 28px;border-radius:5px;font-weight:600;text-align:center;cursor:pointer;border:none;font-size:1rem}.btn-primary{background-color:var(--secondary-color);color:var(--white)}.btn-secondary{background-color:var(--white);color:var(--primary-color);border:2px solid var(--primary-color)}.site-header{background-color:var(--white);box-shadow:var(--shadow);position:sticky;top:0;z-index:1000}.header-top{background-color:var(--primary-color);color:var(--white);padding:8px 0}.header-top .container{display:flex;justify-content:space-between;align-items:center}.emergency-banner{font-weight:600;font-size:.9rem}.main-nav .container{display:flex;justify-content:space-between;align-items:center;padding:15px 20px}.logo{font-size:1.5rem;font-weight:700;color:var(--primary-color);display:flex;align-items:center;gap:10px}.logo img{display:block}.nav-links{display:flex;list-style:none;gap:30px}.nav-links a{color:var(--text-color);font-weight:500}.cta-button{background-color:var(--secondary-color);color:var(--white);padding:12px 24px;border-radius:5px;font-weight:600}.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px}.hamburger span{display:block;width:24px;height:2px;background-color:var(--text-color)}.hero,.page-hero{background:linear-gradient(135deg,var(--primary-color) 0%,var(--primary-dark) 100%);color:var(--white);padding:60px 0;text-align:center}.hero{background:linear-gradient(135deg,rgba(26,95,122,0.6) 0%,rgba(19,75,97,0.65) 100%),url('/assets/images/hero-emergency-plumber-bristol.webp') center/cover no-repeat;padding:80px 0}.hero h1,.page-hero h1{color:var(--white);font-size:3rem;margin-bottom:1rem}.page-hero h1{font-size:2.5rem}.hero-subtitle{font-size:1.5rem;margin-bottom:1rem;opacity:.95}.hero-text{font-size:1.125rem;max-width:700px;margin:0 auto 2rem;opacity:.9}.hero-grid{display:grid;grid-template-columns:1fr 400px;gap:40px;align-items:center;text-align:left}.hero-content{text-align:left}.hero-cta{display:flex;gap:15px;justify-content:flex-start;margin-bottom:2rem;flex-wrap:wrap}.trust-signals{display:flex;gap:30px;justify-content:flex-start;flex-wrap:wrap;font-size:.95rem}.trust-signals span{opacity:.95}.hero-form{background-color:var(--white);padding:30px;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.2)}.hero-form h2{color:var(--primary-color);font-size:1.5rem;margin-bottom:.5rem}.hero-form p{color:#636e72;font-size:.9rem;margin-bottom:1.25rem}.hero-form .form-group{margin-bottom:1rem}.hero-form .form-group label{display:block;margin-bottom:.35rem;font-weight:500;font-size:.9rem;color:var(--text-color)}.hero-form .form-group input,.hero-form .form-group textarea,.hero-form .form-group select{width:100%;padding:10px 12px;border:1px solid #dee2e6;border-radius:5px;font-size:.95rem;font-family:inherit}.btn-block{display:block;width:100%;padding:14px;font-size:1.1rem}.skip-link{position:absolute;top:-40px;left:0;background:var(--primary-color);color:var(--white);padding:8px 16px;z-index:1001;transition:top .3s}.skip-link:focus{top:0}.sticky-cta{position:fixed;bottom:0;left:0;right:0;background:#d63031;z-index:999;box-shadow:0 -2px 10px rgba(0,0,0,.2);text-align:center}.sticky-cta a{display:block;color:#fff;font-weight:700;font-size:1.125rem;padding:14px 20px;text-decoration:none}@media(max-width:768px){h1{font-size:2rem}.hero h1,.page-hero h1{font-size:2.25rem}.hero-subtitle{font-size:1.25rem}.hamburger{display:flex}.main-nav .container{flex-wrap:wrap}.nav-links{display:none;order:3;width:100%;flex-direction:column;align-items:center;padding-top:15px;gap:10px}.nav-links.nav-open{display:flex}.hero-grid{grid-template-columns:1fr;text-align:center}.hero-content{text-align:center}.hero-content .hero-cta{justify-content:center}.hero-content .trust-signals{justify-content:center}.hero-cta{flex-direction:column;align-items:center}.trust-signals{flex-direction:column;gap:10px}.hero-form-wrapper{max-width:500px;margin:0 auto}.header-top .container{flex-direction:column;gap:5px}}
-    </style>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
-    <slot name="extraHead" />
+    {schema && <script type="application/ld+json" set:html={serializeSchema(schema)} />}
 
-    {jsonLd.map((ld) => (
-        <script type="application/ld+json" set:html={JSON.stringify(ld)} />
-    ))}
-</head>
-<body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <Header currentPage={currentPage} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    {BRAND.gscVerification && <meta name="google-site-verification" content={BRAND.gscVerification} />}
+    <link rel="preload" as="image" href="/images/hero-bg-mobile.webp" type="image/webp" media="(max-width: 767px)" />
+    <link rel="preload" as="image" href="/images/hero-bg.webp" type="image/webp" media="(min-width: 768px)" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-    <slot />
-
-    <Footer />
-    <StickyCtaBar />
-
-    <script>
-    document.querySelector('.hamburger')?.addEventListener('click', function() {
-        const nav = document.querySelector('.nav-links');
-        const expanded = this.getAttribute('aria-expanded') === 'true';
-        this.setAttribute('aria-expanded', String(!expanded));
-        nav?.classList.toggle('nav-open');
-        this.classList.toggle('is-active');
-    });
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500
+      });
+      try {
+        var consentChoice = localStorage.getItem('cookie_consent');
+        if (consentChoice === 'accepted') {
+          gtag('consent', 'update', {
+            ad_storage: 'granted',
+            ad_user_data: 'granted',
+            ad_personalization: 'granted',
+            analytics_storage: 'granted'
+          });
+        }
+      } catch (e) {}
     </script>
-</body>
+    <script is:inline define:vars={{ ga4Id: BRAND.ga4Id }}>
+      if (ga4Id) {
+        function loadGTM() {
+          var s = document.createElement('script');
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id;
+          s.async = true;
+          document.head.appendChild(s);
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+        }
+        if (typeof requestIdleCallback === 'function') {
+          requestIdleCallback(loadGTM, { timeout: 3000 });
+        } else {
+          setTimeout(loadGTM, 2000);
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:text-primary focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:font-semibold">Skip to content</a>
+    <header class="bg-white border-b border-border sticky top-0 z-40">
+      <div class="bg-slate-900 text-white">
+        <div class="container-wide px-4 flex items-center justify-between py-2 text-sm">
+          <a href={`tel:${BRAND.phone}`} class="font-semibold hover:underline">{BRAND.phoneFormatted} · 24/7 Emergency</a>
+          <span class="hidden md:inline">{BRAND.serviceAreaLabel}</span>
+        </div>
+      </div>
+
+      <div class="container-wide px-4 py-3 flex items-center justify-between gap-4">
+        <a href="/" class="text-xl font-bold text-primary no-underline">{BRAND.brandName}</a>
+
+        <nav class="hidden lg:flex items-center gap-6" aria-label="Main navigation">
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/">Home</a>
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/services/">Services</a>
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/locations/">Locations</a>
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/about/">About</a>
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/blog/">Blog</a>
+          <a class="font-semibold text-foreground hover:text-primary transition-colors no-underline" href="/contact/">Contact</a>
+        </nav>
+
+        <a class="btn-primary hidden md:inline-flex no-underline" href={`tel:${BRAND.phone}`}>Call 24/7</a>
+
+        <button id="mobile-menu-button" class="border border-border bg-transparent font-semibold px-4 py-2 rounded-lg hover:bg-muted transition-all lg:hidden cursor-pointer" type="button" aria-label="Toggle navigation" aria-controls="mobile-menu" aria-expanded="false">Menu</button>
+      </div>
+
+      <nav id="mobile-menu" class="hidden lg:hidden border-t border-border" aria-label="Mobile navigation">
+        <div class="container-wide px-4 py-4 grid gap-3">
+          <a href="/">Home</a>
+          <a href="/services/">Services</a>
+          <a href="/locations/">Locations</a>
+          <a href="/about/">About</a>
+          <a href="/blog/">Blog</a>
+          <a href="/contact/">Contact</a>
+          <a class="btn-primary no-underline" href={`tel:${BRAND.phone}`}>Call now</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content" class="flex-grow">
+      <slot />
+    </main>
+
+    <footer class="bg-slate-900 text-slate-100 py-12">
+      <div class="container-wide px-4 grid md:grid-cols-3 gap-8">
+        <div>
+          <p class="font-semibold mb-2">{BRAND.brandName}</p>
+          <p class="text-sm text-slate-300">{BRAND.addressLine1}, {BRAND.addressLine2}, {BRAND.postcode}</p>
+          <p class="text-sm mt-2"><a href={`tel:${BRAND.phone}`} class="underline">{BRAND.phoneFormatted}</a></p>
+          <p class="text-sm"><a href={`mailto:${BRAND.email}`} class="underline">{BRAND.email}</a></p>
+          <p class="text-sm mt-2">24/7 emergency response · Mon–Sun</p>
+        </div>
+
+        <div>
+          <p class="font-semibold mb-2">Services</p>
+          <ul class="text-sm space-y-1">
+            {SERVICES.slice(0, 6).map((service) => (
+              <li><a href={`/services/${service.slug}/`} class="hover:underline">{service.name}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p class="font-semibold mb-2">Coverage & trust</p>
+          <ul class="text-sm space-y-1">
+            {LOCATIONS.map((location) => (
+              <li><a href={`/locations/${location.slug}/`} class="hover:underline">Plumber in {location.name}</a></li>
+            ))}
+          </ul>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <span class="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm">Gas Safe registered</span>
+            <span class="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm">Fixed pricing</span>
+            <span class="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm">Fully insured</span>
+          </div>
+          <p class="text-sm mt-4">
+            <a href="/privacy/" class="underline">Privacy</a> · <a href="/terms/" class="underline">Terms</a> · <a href="/cookies/" class="underline">Cookies</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="fixed inset-x-0 bottom-0 z-[45] bg-white border-t border-border py-2 px-4 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden">
+      <div class="container-wide px-4 flex gap-2">
+        <a class="btn-primary w-full no-underline" href={`tel:${BRAND.phone}`} aria-label="Call now">Call now</a>
+        <a class="btn-outline w-full no-underline" href="#quote-form" aria-label="Jump to quote form">Get quote</a>
+      </div>
+    </div>
+
+    <div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-[60] bg-white border-t border-border shadow-lg p-4 hidden" role="dialog" aria-label="Cookie consent">
+      <div class="container-wide px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-sm text-muted-foreground">We use cookies to analyse site traffic and improve your experience. See our <a href="/cookies/" class="underline">cookie policy</a>.</p>
+        <div class="flex gap-2">
+          <button id="cookie-reject" class="border border-border bg-transparent font-semibold px-4 py-2 rounded-lg hover:bg-muted transition-all cursor-pointer">Reject</button>
+          <button id="cookie-accept" class="btn-primary cursor-pointer">Accept</button>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      const menuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      menuButton?.addEventListener('click', () => {
+        const isHidden = mobileMenu?.classList.toggle('hidden');
+        menuButton.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+      });
+    </script>
+
+    <script is:inline>
+      (function () {
+        var banner = document.getElementById('cookie-banner');
+        try {
+          var consent = localStorage.getItem('cookie_consent');
+          if (!consent && banner) banner.classList.remove('hidden');
+        } catch (e) {
+          if (banner) banner.classList.remove('hidden');
+        }
+
+        document.getElementById('cookie-accept')?.addEventListener('click', function () {
+          try { localStorage.setItem('cookie_consent', 'accepted'); } catch (e) {}
+          if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
+            });
+          }
+          banner?.classList.add('hidden');
+        });
+
+        document.getElementById('cookie-reject')?.addEventListener('click', function () {
+          try { localStorage.setItem('cookie_consent', 'rejected'); } catch (e) {}
+          banner?.classList.add('hidden');
+        });
+      })();
+    </script>
+  </body>
 </html>

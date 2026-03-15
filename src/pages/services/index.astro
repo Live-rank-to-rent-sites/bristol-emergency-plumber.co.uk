@@ -1,109 +1,113 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroWithLeadForm from '../../components/HeroWithLeadForm.astro';
+import { BRAND } from '../../data/brand';
+import { SERVICES } from '../../data/services';
+import { SERVICES_OVERVIEW } from '../../data/staticContent';
+import { getBreadcrumbSchema, getWebPageSchema, serializeSchema } from '../../utils/schema';
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
-      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://bristolemergencyplumber.co.uk/services/" }
-    ]
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Plumbing Services in Bristol",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "url": "https://bristolemergencyplumber.co.uk/emergency-plumber-bristol", "name": "Emergency Plumber Bristol" },
-      { "@type": "ListItem", "position": 2, "url": "https://bristolemergencyplumber.co.uk/24-hour-plumber-bristol", "name": "24 Hour Plumber Bristol" },
-      { "@type": "ListItem", "position": 3, "url": "https://bristolemergencyplumber.co.uk/boiler-repair-bristol", "name": "Boiler Repair Bristol" },
-      { "@type": "ListItem", "position": 4, "url": "https://bristolemergencyplumber.co.uk/blocked-drains-bristol", "name": "Blocked Drains Bristol" }
-    ]
-  }
+// SEO-optimized title (50-60 chars)
+const title = `Our Plumbing Services | Bristol Plumbing Specialists`;
+
+// SEO-optimized description (120-155 chars) with benefits and CTA
+const description = `Full range of plumbing services: emergency plumber, boiler repair, blocked drains, and gas safety. Gas Safe registered engineers, fixed pricing. Call ${BRAND.phoneFormatted}.`;
+
+const breadcrumbItems = [
+  { name: "Home", url: "/" },
+  { name: "Services", url: "/services/" }
 ];
+
+const breadcrumbSchema = getBreadcrumbSchema(breadcrumbItems);
+const webPageSchema = getWebPageSchema({
+  url: '/services/',
+  name: title,
+  description: description,
+  breadcrumb: breadcrumbItems
+});
+
+const combinedPageSchema = [breadcrumbSchema, webPageSchema];
 ---
 
-<BaseLayout
-  title="Plumbing Services Bristol | Bristol Emergency Plumber"
-  description="Complete plumbing services in Bristol - emergency plumber, 24 hour callouts, boiler repair, blocked drains and more. Gas Safe registered, available 24/7."
-  canonical="https://bristolemergencyplumber.co.uk/services/"
-  ogTitle="Plumbing Services in Bristol"
-  ogDescription="Complete range of professional plumbing services in Bristol. Emergency repairs, boiler service, drainage solutions and more."
-  currentPage="services"
-  jsonLd={jsonLd}
->
-  <nav class="breadcrumb" aria-label="Breadcrumb">
-    <div class="container">
-      <ol>
-        <li><a href="/">Home</a></li><li><span class="current">Services</span></li>
-      </ol>
+<BaseLayout title={title} description={description} canonical="/services/" schema={combinedPageSchema}>
+  <HeroWithLeadForm
+    title="Our Plumbing Services"
+    description={`From emergency plumbing to gas safety certificates, we provide comprehensive plumbing solutions across ${BRAND.serviceAreaLabel}.`}
+    formId="services-lead-form"
+    source="services"
+  />
+
+  <!-- Overview -->
+  <section class="section-padding bg-muted/30">
+    <div class="container-wide px-4">
+      <nav class="text-sm mb-6" aria-label="Breadcrumb">
+        <a href="/" class="text-primary hover:underline">Home</a>
+        <span class="mx-2 text-muted-foreground">/</span>
+        <span class="text-muted-foreground">Services</span>
+      </nav>
+      <div class="max-w-3xl mx-auto">
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          {SERVICES_OVERVIEW}
+        </p>
+      </div>
     </div>
-  </nav>
-  <main id="main-content" role="main">
-    <section class="page-hero">
-      <div class="container">
-        <h1>Our Plumbing Services</h1>
-        <p>Professional plumbing solutions throughout Bristol - available 24/7</p>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="section-padding">
+    <div class="container-wide px-4">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {SERVICES.map((service) => (
+          <a
+            href={`/services/${service.slug}/`}
+            class="bg-card p-6 rounded-xl card-elevated hover:scale-[1.02] transition-transform group"
+          >
+            <span class="text-5xl mb-4 block">{service.icon}</span>
+            <h2 class="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
+              {service.name}
+            </h2>
+            <p class="text-muted-foreground mb-4">{service.description}</p>
+
+            {service.subServices && service.subServices.length > 0 && (
+              <div class="border-t border-border pt-4 mt-4">
+                <p class="text-sm font-medium mb-2">Includes:</p>
+                <ul class="text-sm text-muted-foreground space-y-1">
+                  {service.subServices.slice(0, 3).map((sub) => (
+                    <li class="flex items-center gap-2">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-trust"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+                      {sub.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div class="mt-4 flex items-center gap-2 text-primary font-medium">
+              Learn more
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </div>
+          </a>
+        ))}
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="content-section">
-      <div class="container">
-        <p>Bristol Emergency Plumber provides comprehensive plumbing services for homes and businesses across Bristol. From urgent emergency repairs to scheduled maintenance, our qualified team delivers professional results every time.</p>
-
-        <div class="services-list">
-          <div class="service-item">
-            <h2><a href="/services/emergency-plumber">Emergency Plumber Bristol</a></h2>
-            <p>Rapid response emergency plumbing when you need it most. Our emergency team handles burst pipes, severe leaks, flooding, and all urgent plumbing situations. Available 24 hours a day, 365 days a year with typical response times of 30-60 minutes across Bristol.</p>
-            <a href="/services/emergency-plumber" class="btn btn-secondary">Learn More</a>
-          </div>
-
-          <div class="service-item">
-            <h2><a href="/services/24-hour-plumber">24 Hour Plumber Bristol</a></h2>
-            <p>Round-the-clock plumbing assistance for any situation. Whether you need help at midnight or midday, our fully staffed 24-hour service ensures professional help is always available. No waiting until morning for qualified assistance.</p>
-            <a href="/services/24-hour-plumber" class="btn btn-secondary">Learn More</a>
-          </div>
-
-          <div class="service-item">
-            <h2><a href="/services/boiler-repair">Boiler Repair Bristol</a></h2>
-            <p>Expert boiler diagnosis and repair by Gas Safe registered engineers. We service all major boiler brands and can resolve most faults during the first visit. Emergency boiler breakdown service available for urgent heating failures.</p>
-            <a href="/services/boiler-repair" class="btn btn-secondary">Learn More</a>
-          </div>
-
-          <div class="service-item">
-            <h2><a href="/services/blocked-drains">Blocked Drains Bristol</a></h2>
-            <p>Professional drain clearance using high-pressure jetting and CCTV surveys. We clear all types of blockages from toilets and sinks to main sewers. Emergency drain clearance available for flooding and sewage backups.</p>
-            <a href="/services/blocked-drains" class="btn btn-secondary">Learn More</a>
-          </div>
-        </div>
+  <!-- CTA Section -->
+  <section class="section-padding bg-primary text-primary-foreground">
+    <div class="container-wide px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Need a Plumbing Service?
+      </h2>
+      <p class="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+        Contact us today for a free, no-obligation quote. We're available 24/7 for emergencies.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`tel:${BRAND.phone}`} class="bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-white/90 transition-all text-lg">
+          Call {BRAND.phoneFormatted}
+        </a>
+        <a href="/contact/" class="border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-primary transition-all text-lg">
+          Get a Quote
+        </a>
       </div>
-    </section>
-
-    <section class="content-section alt">
-      <div class="container">
-        <h2>Services Available Across All Bristol Areas</h2>
-        <p>All our plumbing services are available throughout Bristol. Find your local area for details on response times and local expertise:</p>
-        <div class="locations-grid">
-          <a href="/locations/north-bristol" class="location-link">North Bristol</a>
-          <a href="/locations/south-bristol" class="location-link">South Bristol</a>
-          <a href="/locations/east-bristol" class="location-link">East Bristol</a>
-          <a href="/locations/west-bristol" class="location-link">West Bristol</a>
-          <a href="/locations/central-bristol" class="location-link">Central Bristol</a>
-        </div>
-        <p class="locations-note"><a href="/locations/">View all Bristol locations</a></p>
-      </div>
-    </section>
-
-    <section class="cta-section">
-      <div class="container">
-        <h2>Need a Plumber in Bristol?</h2>
-        <p>Contact us now for professional plumbing services. Available 24/7 for emergencies.</p>
-        <div class="cta-buttons">
-          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
-          <a href="/contact" class="btn btn-secondary btn-large">Send Us a Message</a>
-        </div>
-      </div>
-    </section>
-  </main>
+    </div>
+  </section>
 </BaseLayout>

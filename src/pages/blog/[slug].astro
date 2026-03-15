@@ -1,31 +1,98 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { BRAND } from '../../data/brand';
+import { BLOG_POSTS, getRecentPosts, type BlogPost } from '../../data/blog';
 import { getPublishedPosts, getPostBySlug, type CMSBlogPost } from '../../lib/blog-api';
 import { serializeLexical, lexicalToPlainText } from '../../lib/lexical-html';
+import { getBreadcrumbSchema, getBlogArticleSchema, getBaseBusinessSchema, serializeSchema } from '../../utils/schema';
 
 export async function getStaticPaths() {
-  const cmsResponse = await getPublishedPosts(500);
-  return cmsResponse.docs.map((post) => ({
+  // Local posts
+  const localPaths = BLOG_POSTS.map((post) => ({
     params: { slug: post.slug },
-    props: { post }
+    props: { post, source: 'local' as const }
   }));
+
+  // CMS posts
+  const cmsResponse = await getPublishedPosts(500);
+  const localSlugs = new Set(BLOG_POSTS.map((p) => p.slug));
+  const cmsPaths = cmsResponse.docs
+    .filter((post) => !localSlugs.has(post.slug))
+    .map((post) => ({
+      params: { slug: post.slug },
+      props: { post, source: 'cms' as const }
+    }));
+
+  return [...localPaths, ...cmsPaths];
 }
 
-interface Props {
-  post: CMSBlogPost;
+const { post, source } = Astro.props;
+
+// Normalize post data
+const isCMS = source === 'cms';
+const postTitle = post.title;
+const postSlug = post.slug;
+const postAuthor = isCMS
+  ? ((post as CMSBlogPost).author || (post as CMSBlogPost).site?.defaultAuthor || 'Team')
+  : (post as BlogPost).author;
+const postDate = isCMS
+  ? ((post as CMSBlogPost).publishDate || new Date().toISOString())
+  : (post as BlogPost).publishDate;
+const postCategory = isCMS
+  ? ((post as CMSBlogPost).categories?.[0]?.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Blog')
+  : (post as BlogPost).category;
+const postTags = isCMS
+  ? ((post as CMSBlogPost).categories || [])
+  : (post as BlogPost).tags;
+const postExcerpt = isCMS
+  ? ((post as CMSBlogPost).excerpt || lexicalToPlainText((post as CMSBlogPost).content).slice(0, 200))
+  : (post as BlogPost).excerpt;
+const postMetaTitle = isCMS
+  ? ((post as CMSBlogPost).seo?.metaTitle || postTitle)
+  : (post as BlogPost).metaTitle;
+const postMetaDescription = isCMS
+  ? ((post as CMSBlogPost).seo?.metaDescription || postExcerpt)
+  : (post as BlogPost).metaDescription;
+const postReadingTime = isCMS
+  ? Math.max(1, Math.ceil(lexicalToPlainText((post as CMSBlogPost).content).split(/\s+/).length / 200))
+  : (post as BlogPost).readingTime;
+const postSchemaType = isCMS ? ((post as CMSBlogPost).schemaType || 'BlogPosting') : 'BlogPosting';
+
+// Get HTML content
+let contentHtml: string;
+if (isCMS) {
+  contentHtml = serializeLexical((post as CMSBlogPost).content);
+} else {
+  contentHtml = formatContent((post as BlogPost).content);
 }
 
-const { post } = Astro.props;
+// Featured image
+const featuredImage = isCMS ? (post as CMSBlogPost).featuredImage : undefined;
 
-const postAuthor = post.author || post.site?.defaultAuthor || 'Bristol Emergency Plumber';
-const postDate = post.publishDate || new Date().toISOString();
-const postCategory = post.categories?.[0]?.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Blog';
-const postExcerpt = post.excerpt || lexicalToPlainText(post.content).slice(0, 160);
-const postMetaTitle = post.seo?.metaTitle || post.title;
-const postMetaDescription = post.seo?.metaDescription || postExcerpt;
-const readingTime = Math.max(1, Math.ceil(lexicalToPlainText(post.content).split(/\s+/).length / 200));
-const contentHtml = serializeLexical(post.content);
-const schemaType = post.schemaType || 'BlogPosting';
+const breadcrumbSchema = getBreadcrumbSchema([
+  { name: "Home", url: "/" },
+  { name: "Blog", url: "/blog/" },
+  { name: postTitle, url: `/blog/${postSlug}/` }
+]);
+
+const articleSchemaData = isCMS ? {
+  slug: postSlug,
+  title: postTitle,
+  metaTitle: postMetaTitle,
+  metaDescription: postMetaDescription,
+  excerpt: postExcerpt,
+  content: '',
+  author: postAuthor,
+  publishDate: postDate,
+  category: postCategory,
+  tags: postTags,
+  readingTime: postReadingTime,
+} : post;
+
+const articleSchema = getBlogArticleSchema(articleSchemaData as BlogPost);
+const businessSchema = getBaseBusinessSchema();
+
+const recentPosts = getRecentPosts(3).filter(p => p.slug !== postSlug).slice(0, 3);
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-GB', {
@@ -35,185 +102,154 @@ function formatDate(dateString: string): string {
   });
 }
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
-    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bristolemergencyplumber.co.uk/blog/" },
-    { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://bristolemergencyplumber.co.uk/blog/${post.slug}/` }
-  ]
-};
-
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": schemaType,
-  "headline": post.title,
-  "description": postMetaDescription,
-  "author": { "@type": "Person", "name": postAuthor },
-  "datePublished": postDate,
-  "publisher": {
-    "@type": "Organization",
-    "name": "Bristol Emergency Plumber",
-    "url": "https://bristolemergencyplumber.co.uk"
-  },
-  ...(post.featuredImage?.url ? { "image": post.featuredImage.url } : {}),
-  "mainEntityOfPage": `https://bristolemergencyplumber.co.uk/blog/${post.slug}/`
-};
+// Convert markdown-style headings and paragraphs to HTML (for local posts)
+function formatContent(content: string): string {
+  return content
+    .split('\n\n')
+    .map(paragraph => {
+      if (paragraph.startsWith('## ')) {
+        return `<h2 class="text-2xl font-bold mt-8 mb-4">${paragraph.replace('## ', '')}</h2>`;
+      }
+      if (paragraph.startsWith('### ')) {
+        return `<h3 class="text-xl font-semibold mt-6 mb-3">${paragraph.replace('### ', '')}</h3>`;
+      }
+      if (paragraph.includes('\n- ')) {
+        const items = paragraph.split('\n- ').filter(Boolean);
+        const listItems = items.map(item => `<li class="ml-4">${item.replace(/^\- /, '')}</li>`).join('');
+        return `<ul class="list-disc pl-6 mb-4 space-y-2">${listItems}</ul>`;
+      }
+      if (paragraph.match(/^\d\. /)) {
+        const items = paragraph.split('\n').filter(Boolean);
+        const listItems = items.map(item => `<li class="ml-4">${item.replace(/^\d\. /, '')}</li>`).join('');
+        return `<ol class="list-decimal pl-6 mb-4 space-y-2">${listItems}</ol>`;
+      }
+      return `<p class="text-muted-foreground mb-4 leading-relaxed">${paragraph}</p>`;
+    })
+    .join('')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline font-medium">$1</a>');
+}
 ---
 
 <BaseLayout
   title={postMetaTitle}
   description={postMetaDescription}
-  canonical={`https://bristolemergencyplumber.co.uk/blog/${post.slug}/`}
-  jsonLd={[breadcrumbLd, articleLd]}
-  currentPage="blog"
+  canonical={`/blog/${postSlug}/`}
+  schema={[businessSchema, articleSchema]}
 >
-  {post.featuredImage?.url ? (
-    <section style={`background: linear-gradient(to top, rgba(0,0,0,0.7), transparent), url('${post.featuredImage.url}') center/cover no-repeat; padding: 120px 0 60px; color: white; text-align: center;`}>
-      <div class="container">
-        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 16px;">
-          <span style="font-size: 0.85rem; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px;">{postCategory}</span>
-          <span style="font-size: 0.85rem; opacity: 0.8;">{readingTime} min read</span>
-        </div>
-        <h1 style="color: white; font-size: 2.5rem; max-width: 800px; margin: 0 auto 16px;">{post.title}</h1>
-        <div style="font-size: 0.9rem; opacity: 0.8;">
-          By {postAuthor} &middot; <time datetime={postDate}>{formatDate(postDate)}</time>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <!-- Featured Image or Hero -->
+  {featuredImage?.url ? (
+    <section class="relative">
+      <img src={featuredImage.url} alt={featuredImage.alt} class="w-full h-64 md:h-96 object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+        <div class="container-narrow px-4 pb-8 text-white">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">{postCategory}</span>
+            <span class="text-sm text-white/80">{postReadingTime} min read</span>
+          </div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">{postTitle}</h1>
+          <div class="flex items-center gap-4 text-white/80 text-sm">
+            <span>By {postAuthor}</span>
+            <span>&middot;</span>
+            <time datetime={postDate}>{formatDate(postDate)}</time>
+          </div>
         </div>
       </div>
     </section>
   ) : (
-    <section class="page-hero">
-      <div class="container" style="text-align: center;">
-        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 16px;">
-          <span style="font-size: 0.85rem; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px;">{postCategory}</span>
-          <span style="font-size: 0.85rem; opacity: 0.8;">{readingTime} min read</span>
-        </div>
-        <h1>{post.title}</h1>
-        <div style="font-size: 0.9rem; opacity: 0.8;">
-          By {postAuthor} &middot; <time datetime={postDate}>{formatDate(postDate)}</time>
+    <section class="hero-section">
+      <div class="hero-overlay py-16 md:py-20">
+        <div class="container-narrow px-4 text-center text-white">
+          <div class="flex items-center justify-center gap-2 mb-4">
+            <span class="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">{postCategory}</span>
+            <span class="text-sm text-white/80">{postReadingTime} min read</span>
+          </div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">{postTitle}</h1>
+          <div class="flex items-center justify-center gap-4 text-white/80 text-sm">
+            <span>By {postAuthor}</span>
+            <span>&middot;</span>
+            <time datetime={postDate}>{formatDate(postDate)}</time>
+          </div>
         </div>
       </div>
     </section>
   )}
 
-  <nav style="background: var(--bg-light); border-bottom: 1px solid #dee2e6; padding: 12px 0;">
-    <div class="container">
-      <ol style="display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--text-light); list-style: none; margin: 0; padding: 0;">
-        <li><a href="/">Home</a></li>
-        <li>/</li>
-        <li><a href="/blog/">Blog</a></li>
-        <li>/</li>
-        <li style="color: var(--text-color); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;">{post.title}</li>
+  <!-- Breadcrumbs -->
+  <nav class="bg-muted/50 border-b border-border" aria-label="Breadcrumb">
+    <div class="container-narrow px-4 py-3">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">Home</a></li>
+        <li><span class="mx-2">/</span></li>
+        <li><a href="/blog/" class="hover:text-primary transition-colors">Blog</a></li>
+        <li><span class="mx-2">/</span></li>
+        <li class="text-foreground font-medium truncate max-w-[200px]">{postTitle}</li>
       </ol>
     </div>
   </nav>
 
-  <article style="padding: 60px 0;">
-    <div class="container" style="max-width: 800px;">
-      <div class="article-content" set:html={contentHtml} />
+  <!-- Article Content -->
+  <article class="section-padding">
+    <div class="container-narrow px-4">
+      <div class="prose prose-lg max-w-none" set:html={contentHtml} />
 
-      {post.categories && post.categories.length > 0 && (
-        <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid #dee2e6;">
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            {post.categories.map((tag: string) => (
-              <span style="font-size: 0.85rem; background: var(--bg-light); color: var(--text-light); padding: 4px 12px; border-radius: 20px;">
-                #{tag}
-              </span>
-            ))}
-          </div>
+      <!-- Tags -->
+      <div class="mt-10 pt-6 border-t border-border">
+        <div class="flex flex-wrap gap-2">
+          {postTags.map((tag: string) => (
+            <span class="text-sm bg-muted text-muted-foreground px-3 py-1 rounded-full">
+              #{tag.replace(/\s+/g, '')}
+            </span>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   </article>
 
-  <section style="padding: 60px 0; background: var(--primary-color); color: var(--white); text-align: center;">
-    <div class="container">
-      <h2 style="color: var(--white); font-size: 2rem; margin-bottom: 16px;">Need Emergency Help?</h2>
-      <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Our expert plumbing team is available 24/7 across Bristol.
+  <!-- Related Posts -->
+  {recentPosts.length > 0 && (
+    <section class="section-padding bg-muted/50">
+      <div class="container-wide px-4">
+        <h2 class="text-2xl font-bold mb-8 text-center">More Articles</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          {recentPosts.map((relatedPost) => (
+            <article class="bg-white border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div class="p-5">
+                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+                  {relatedPost.category}
+                </span>
+                <h3 class="text-lg font-bold mt-3 mb-2 line-clamp-2">
+                  <a href={`/blog/${relatedPost.slug}/`} class="hover:text-primary transition-colors">
+                    {relatedPost.title}
+                  </a>
+                </h3>
+                <p class="text-muted-foreground text-sm line-clamp-2">
+                  {relatedPost.excerpt}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="section-padding bg-primary text-primary-foreground">
+    <div class="container-wide px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Need Professional Help?</h2>
+      <p class="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+        Our expert plumbing team is available 24/7 across Bristol and surrounding areas.
       </p>
-      <a href="tel:01234567890" class="btn btn-primary" style="background: var(--secondary-color); font-size: 1.1rem;">
-        Call Now
-      </a>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`tel:${BRAND.phone}`} class="bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-white/90 transition-all text-lg">
+          Call {BRAND.phoneFormatted}
+        </a>
+        <a href="/contact/" class="border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white/10 transition-all text-lg">
+          Get a Quote
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .article-content {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-color);
-  }
-  .article-content h2 {
-    font-size: 1.75rem;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-  .article-content h3 {
-    font-size: 1.35rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .article-content p {
-    margin-bottom: 1.25rem;
-    color: var(--text-light);
-  }
-  .article-content ul, .article-content ol {
-    margin-bottom: 1.25rem;
-    padding-left: 1.5rem;
-  }
-  .article-content li {
-    margin-bottom: 0.5rem;
-  }
-  .article-content blockquote {
-    border-left: 4px solid var(--primary-color);
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 0;
-    background: var(--bg-light);
-    font-style: italic;
-  }
-  .article-content a {
-    color: var(--primary-color);
-    font-weight: 500;
-  }
-  .article-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 1.5rem 0;
-  }
-  .article-content figure {
-    margin: 1.5rem 0;
-  }
-  .article-content figcaption {
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--text-light);
-    margin-top: 0.5rem;
-  }
-  .article-content pre {
-    background: #2d3436;
-    color: #dfe6e9;
-    padding: 1rem;
-    border-radius: 8px;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  .article-content code {
-    background: var(--bg-light);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 0.9em;
-  }
-  .article-content pre code {
-    background: none;
-    padding: 0;
-  }
-  .article-content hr {
-    border: none;
-    border-top: 1px solid #dee2e6;
-    margin: 2rem 0;
-  }
-</style>

@@ -1,20 +1,51 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { BRAND } from '../../data/brand';
+import { BLOG_POSTS, getAllCategories } from '../../data/blog';
 import { getPublishedPosts } from '../../lib/blog-api';
 import { lexicalToPlainText } from '../../lib/lexical-html';
+import { getBreadcrumbSchema } from '../../utils/schema';
 
-const title = 'Plumbing Tips & Advice | Bristol Emergency Plumber Blog';
-const description = 'Expert plumbing tips, advice, and guides from Bristol\'s trusted emergency plumber. Learn about plumbing emergencies, maintenance tips, and more.';
+const title = `Plumbing Tips & Advice | ${BRAND.brandName} Blog`;
+const description = `Expert plumbing tips, advice, and guides from Bristol's trusted emergency plumbers. Learn about boiler repairs, blocked drains, gas safety, and more.`;
 
+const breadcrumbSchema = getBreadcrumbSchema([
+  { name: "Home", url: "/" },
+  { name: "Blog", url: "/blog/" }
+]);
+
+// Fetch CMS posts
 const cmsResponse = await getPublishedPosts(50);
-const posts = cmsResponse.docs.map((post) => ({
+const cmsPosts = cmsResponse.docs.map((post) => ({
   slug: post.slug,
   title: post.title,
   excerpt: post.excerpt || lexicalToPlainText(post.content).slice(0, 200) + '...',
   category: post.categories?.[0]?.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Blog',
-  publishDate: post.publishDate || new Date().toISOString(),
+  publishDate: post.publishDate || post.createdAt || new Date().toISOString(),
   readingTime: Math.max(1, Math.ceil(lexicalToPlainText(post.content).split(/\s+/).length / 200)),
+  source: 'cms' as const,
 }));
+
+// Merge: CMS posts first, then local posts (deduped by slug)
+const cmsSlugSet = new Set(cmsPosts.map((p) => p.slug));
+const localPosts = BLOG_POSTS.filter((p) => !cmsSlugSet.has(p.slug)).map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  excerpt: p.excerpt,
+  category: p.category,
+  publishDate: p.publishDate,
+  readingTime: p.readingTime,
+  source: 'local' as const,
+}));
+
+const allPosts = [...cmsPosts, ...localPosts].sort(
+  (a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+);
+
+const categories = [...new Set([
+  ...getAllCategories(),
+  ...cmsPosts.map((p) => p.category),
+])];
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-GB', {
@@ -23,82 +54,83 @@ function formatDate(dateString: string): string {
     year: 'numeric'
   });
 }
-
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
-    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://bristolemergencyplumber.co.uk/blog/" }
-  ]
-};
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  canonical="https://bristolemergencyplumber.co.uk/blog/"
-  jsonLd={[breadcrumbLd]}
-  currentPage="blog"
->
-  <section class="page-hero">
-    <div class="container">
-      <h1>Plumbing Tips & Advice</h1>
-      <p class="hero-subtitle">Expert guides from Bristol's trusted emergency plumber</p>
-    </div>
-  </section>
+<BaseLayout title={title} description={description} canonical="/blog/">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
-  <section style="padding: 60px 0;">
-    <div class="container">
-      {posts.length === 0 ? (
-        <p style="text-align: center; color: var(--text-light); font-size: 1.1rem; padding: 40px 0;">
-          No blog posts yet. Check back soon for expert plumbing tips and advice.
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay py-16 md:py-20">
+      <div class="container-wide px-4 text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Plumbing Tips & Advice</h1>
+        <p class="text-lg text-white/90 max-w-2xl mx-auto">
+          Expert guides and practical tips from Bristol's trusted emergency plumbing specialists
         </p>
-      ) : (
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px;">
-          {posts.map((post) => (
-            <article style="background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;">
-              <div style="padding: 24px;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                  <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary-color); background: rgba(26,95,122,0.1); padding: 4px 10px; border-radius: 20px;">
-                    {post.category}
-                  </span>
-                  <span style="font-size: 0.8rem; color: var(--text-light);">
-                    {post.readingTime} min read
-                  </span>
-                </div>
-                <h2 style="font-size: 1.25rem; margin-bottom: 10px;">
-                  <a href={`/blog/${post.slug}/`} style="color: var(--text-color); text-decoration: none;">
-                    {post.title}
-                  </a>
-                </h2>
-                <p style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                  {post.excerpt}
-                </p>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <time datetime={post.publishDate} style="font-size: 0.8rem; color: var(--text-light);">
-                    {formatDate(post.publishDate)}
-                  </time>
-                  <a href={`/blog/${post.slug}/`} style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">
-                    Read more &rarr;
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   </section>
 
-  <section style="padding: 60px 0; background: var(--primary-color); color: var(--white); text-align: center;">
-    <div class="container">
-      <h2 style="color: var(--white); font-size: 2rem; margin-bottom: 16px;">Need Emergency Help?</h2>
-      <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Our expert plumbing team is available 24/7 for emergencies across Bristol.
+  <!-- Blog Posts Grid -->
+  <section class="section-padding">
+    <div class="container-wide px-4">
+      <!-- Categories Filter -->
+      <div class="flex flex-wrap gap-2 mb-10 justify-center">
+        <span class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium">
+          All Posts
+        </span>
+        {categories.map((category) => (
+          <span class="px-4 py-2 bg-muted text-muted-foreground rounded-full text-sm font-medium hover:bg-primary/10 transition-colors cursor-default">
+            {category}
+          </span>
+        ))}
+      </div>
+
+      <!-- Posts Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {allPosts.map((post) => (
+          <article class="bg-white border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+                  {post.category}
+                </span>
+                <span class="text-xs text-muted-foreground">
+                  {post.readingTime} min read
+                </span>
+              </div>
+              <h2 class="text-xl font-bold mb-3 line-clamp-2">
+                <a href={`/blog/${post.slug}/`} class="hover:text-primary transition-colors">
+                  {post.title}
+                </a>
+              </h2>
+              <p class="text-muted-foreground text-sm mb-4 line-clamp-3">
+                {post.excerpt}
+              </p>
+              <div class="flex items-center justify-between">
+                <time datetime={post.publishDate} class="text-xs text-muted-foreground">
+                  {formatDate(post.publishDate)}
+                </time>
+                <a href={`/blog/${post.slug}/`} class="text-primary text-sm font-medium hover:underline">
+                  Read more →
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section-padding bg-primary text-primary-foreground">
+    <div class="container-wide px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Need Professional Help?</h2>
+      <p class="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+        Our expert plumbing team is available 24/7 for emergencies and scheduled appointments.
       </p>
-      <a href="tel:01234567890" class="btn btn-primary" style="background: var(--secondary-color); font-size: 1.1rem;">
-        Call Now
+      <a href={`tel:${BRAND.phone}`} class="bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-white/90 transition-all text-lg inline-block">
+        Call {BRAND.phoneFormatted}
       </a>
     </div>
   </section>

@@ -12,7 +12,7 @@ export const BRAND = {
   tagline: "Fast, Reliable Emergency Plumbing Solutions",
   emergencyAvailable: true,
 
-  // Per-site tracking & verification
+  // Per-site tracking & verification — update these when cloning the template
   ga4Id: "G-N2XV9D491H",
   gscVerification: "google961cee0b68e77cd7",
 

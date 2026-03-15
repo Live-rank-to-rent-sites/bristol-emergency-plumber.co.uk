@@ -1,61 +1,10 @@
-# Cloudflare Pages redirects file
+# Redirects for Cloudflare Pages/Workers
 
 # www to non-www redirect (301 permanent)
 https://www.bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
 http://www.bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
 http://bristolemergencyplumber.co.uk/* https://bristolemergencyplumber.co.uk/:splat 301
 
-# Current pages - .html to clean URL redirects
-/24-hour-plumber-bristol.html /24-hour-plumber-bristol 301
-/about.html /about 301
-/accessibility.html /accessibility 301
-/blocked-drains-bristol.html /blocked-drains-bristol 301
-/boiler-repair-bristol.html /boiler-repair-bristol 301
-/contact.html /contact 301
-/cookie-policy.html /cookie-policy 301
-/emergency-plumber-bristol.html /emergency-plumber-bristol 301
-/privacy-policy.html /privacy-policy 301
-/terms.html /terms 301
-/locations/central-bristol.html /locations/central-bristol 301
-/locations/east-bristol.html /locations/east-bristol 301
-/locations/north-bristol.html /locations/north-bristol 301
-/locations/south-bristol.html /locations/south-bristol 301
-/locations/west-bristol.html /locations/west-bristol 301
-
-# Redirect deleted individual location pages to their regional pages
-
-# West Bristol (BS6, BS8) - Clifton, Redland, Cotham, Kingsdown, Hotwells
-/locations/clifton.html /locations/west-bristol 301
-/locations/redland.html /locations/west-bristol 301
-/locations/kingsdown.html /locations/west-bristol 301
-
-# North Bristol (BS7, BS9, BS10, BS32, BS34)
-/locations/bishopston.html /locations/north-bristol 301
-/locations/horfield.html /locations/north-bristol 301
-/locations/southmead.html /locations/north-bristol 301
-/locations/henleaze.html /locations/north-bristol 301
-/locations/westbury-on-trym.html /locations/north-bristol 301
-/locations/stapleton.html /locations/north-bristol 301
-
-# South Bristol (BS3, BS4, BS13)
-/locations/bedminster.html /locations/south-bristol 301
-/locations/southville.html /locations/south-bristol 301
-/locations/knowle.html /locations/south-bristol 301
-/locations/brislington.html /locations/south-bristol 301
-/locations/totterdown.html /locations/south-bristol 301
-/locations/hartcliffe.html /locations/south-bristol 301
-/locations/withywood.html /locations/south-bristol 301
-/locations/ashton.html /locations/south-bristol 301
-
-# East Bristol (BS5, BS15, BS16)
-/locations/fishponds.html /locations/east-bristol 301
-/locations/easton.html /locations/east-bristol 301
-/locations/eastville.html /locations/east-bristol 301
-/locations/st-george.html /locations/east-bristol 301
-/locations/speedwell.html /locations/east-bristol 301
-
-# Central Bristol (BS1, BS2)
-/locations/montpelier.html /locations/central-bristol 301
-/locations/st-pauls.html /locations/central-bristol 301
-/locations/st-werburghs.html /locations/central-bristol 301
-/sitemap.xml /sitemap-index.xml 301
+# Old FAQ URL redirect (301 permanent)
+/frequently-asked-questions/ /faq/ 301
+/frequently-asked-questions /faq/ 301

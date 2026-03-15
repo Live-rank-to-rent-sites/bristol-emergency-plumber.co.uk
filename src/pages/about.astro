@@ -1,116 +1,149 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { BRAND } from '../data/brand';
+import { SERVICES } from '../data/services';
+import { LOCATIONS } from '../data/locations';
+import { ABOUT_CONTENT } from '../data/staticContent';
+import { getBreadcrumbSchema, getWebPageSchema, serializeSchema } from '../utils/schema';
 
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": "https://bristolemergencyplumber.co.uk/#organization",
-    "name": "Bristol Emergency Plumber",
-    "url": "https://bristolemergencyplumber.co.uk/",
-    "description": "Professional emergency plumbing services in Bristol available 24/7. Gas Safe registered, fully insured plumbers serving Bristol and surrounding areas for over 15 years.",
-    "foundingDate": "2009",
-    "areaServed": {
-      "@type": "City",
-      "name": "Bristol",
-      "containedInPlace": { "@type": "Country", "name": "United Kingdom" }
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+44-117-428-0200",
-      "contactType": "customer service",
-      "availableLanguage": "English"
-    },
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Future Space, North Gate (UWE), Filton Road",
-      "addressLocality": "Stoke Gifford",
-      "addressRegion": "Bristol",
-      "postalCode": "BS34 8RB",
-      "addressCountry": "GB"
-    },
-    "knowsAbout": ["Emergency Plumbing", "Boiler Repair", "Blocked Drains", "Leak Detection", "Gas Safe Services"]
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bristolemergencyplumber.co.uk/" },
-      { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://bristolemergencyplumber.co.uk/about/" }
-    ]
-  }
+// SEO-optimized title (50-60 chars)
+const title = `About Us | Bristol's Trusted Plumbing Specialists`;
+
+// SEO-optimized description (120-155 chars) with benefits and CTA
+const description = `Meet ${BRAND.brandName} - Gas Safe registered engineers serving Bristol and surrounding areas 24/7. Fixed pricing, no hidden extras. Call ${BRAND.phoneFormatted}.`;
+
+const breadcrumbItems = [
+  { name: "Home", url: "/" },
+  { name: "About Us", url: "/about/" }
 ];
+
+const breadcrumbSchema = getBreadcrumbSchema(breadcrumbItems);
+
+const webPageSchema = getWebPageSchema({
+  url: '/about/',
+  name: title,
+  description: description,
+  breadcrumb: breadcrumbItems
+});
+
+const combinedPageSchema = [breadcrumbSchema, webPageSchema];
 ---
 
-<BaseLayout
-  title="About Us | Bristol Emergency Plumber | Local Trusted Plumbers"
-  description="About Bristol Emergency Plumber - trusted local plumbers serving Bristol for over 15 years. Gas Safe registered, fully insured, and committed to quality workmanship."
-  canonical="https://bristolemergencyplumber.co.uk/about/"
-  ogTitle="About Bristol Emergency Plumber"
-  ogDescription="Learn about our team of experienced, Gas Safe registered plumbers serving Bristol and surrounding locations."
-  currentPage="about"
-  jsonLd={jsonLd}
->
-  <nav class="breadcrumb" aria-label="Breadcrumb">
-    <div class="container">
-      <ol>
-        <li><a href="/">Home</a></li><li><span class="current">About Us</span></li>
-      </ol>
+<BaseLayout title={title} description={description} canonical="/about/" schema={combinedPageSchema}>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay py-16 md:py-20">
+      <div class="container-wide px-4 text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">About {BRAND.brandName}</h1>
+        <p class="text-lg text-white/90 max-w-2xl mx-auto">
+          Your trusted plumbing specialists serving {BRAND.serviceAreaLabel}
+        </p>
+      </div>
     </div>
-  </nav>
-  <main id="main-content" role="main">
-    <section class="page-hero">
-      <div class="container">
-        <h1>About Bristol Emergency Plumber</h1>
-        <p>Trusted local plumbers serving Bristol and surrounding locations for over fifteen years.</p>
+  </section>
+
+  <!-- Main Content -->
+  <section class="section-padding">
+    <div class="container-narrow px-4">
+      <div class="prose prose-lg max-w-none">
+        <h2 class="text-2xl font-bold mb-4">Trusted Plumbing Specialists in {BRAND.serviceAreaLabel}</h2>
+        {ABOUT_CONTENT.split('\n\n').map((paragraph) => (
+          <p class="text-muted-foreground mb-6">{paragraph}</p>
+        ))}
       </div>
-    </section>
 
-    <section class="content-section">
-      <div class="container">
-        <h2>Your Local Bristol Plumbing Experts</h2>
-        <p>Bristol Emergency Plumber was founded with a simple mission: to provide Bristol residents and businesses with reliable, professional plumbing services whenever they need them. Today, we offer a comprehensive range of services including <a href="/emergency-plumber-bristol">emergency plumbing</a>, <a href="/boiler-repair-bristol">boiler repair</a>, <a href="/blocked-drains-bristol">drain clearance</a>, and <a href="/24-hour-plumber-bristol">24-hour plumbing assistance</a>. Over the past fifteen years, we've grown from a small local operation into one of Bristol's most trusted plumbing services, but our commitment to quality workmanship and customer satisfaction remains unchanged.</p>
-
-        <p>What sets us apart is our genuine dedication to the Bristol community. We're not a faceless national company dispatching contractors from who-knows-where. Our plumbers live and work in Bristol. They know the local area, understand the specific plumbing challenges Bristol properties face, and take pride in serving their neighbours.</p>
-
-        <h3>Our Values</h3>
-        <p><strong>Reliability:</strong> When we say we'll be there, we mean it. Our commitment to punctuality and dependability has been the foundation of our reputation. Thousands of Bristol customers have trusted us in their homes, and we never take that trust for granted.</p>
-
-        <p><strong>Honesty:</strong> We believe in transparent, upfront pricing and honest advice. If a repair isn't necessary, we'll tell you. If there's a more cost-effective solution, we'll recommend it. We're building long-term relationships with our customers, not looking for quick profits.</p>
-
-        <p><strong>Quality:</strong> Every job we undertake, whether it's a simple tap repair or a complete bathroom installation, receives the same attention to quality. We use reputable materials, follow industry best practices, and guarantee our workmanship.</p>
-
-        <p><strong>Respect:</strong> We treat every customer's home with the respect it deserves. Our plumbers are courteous, tidy, and always mindful that they're working in your personal space.</p>
-      </div>
-    </section>
-
-    <section class="content-section alt">
-      <div class="container">
-        <h2>Our Qualifications</h2>
-        <p>All Bristol Emergency Plumber engineers hold relevant industry qualifications and maintain their skills through ongoing training. Our team includes:</p>
-
-        <ul>
-          <li><strong>Gas Safe Registered Engineers:</strong> All engineers who work on gas appliances are registered with Gas Safe, the official gas registration body for the United Kingdom.</li>
-          <li><strong>Fully Insured Professionals:</strong> We carry comprehensive public liability insurance and professional indemnity cover for your complete peace of mind.</li>
-          <li><strong>DBS Checked Staff:</strong> All our team members have undergone background checks, so you can feel comfortable welcoming them into your home.</li>
-        </ul>
-
-        <h3>Our Commitment to Bristol</h3>
-        <p>As a local business, we're invested in the Bristol community. We support local suppliers where possible, employ local people, and take pride in contributing to the local economy. When you choose Bristol Emergency Plumber, you're supporting a genuine local business.</p>
-
-        <p>We serve all Bristol locations including <a href="/locations/west-bristol">Clifton and Redland</a>, <a href="/locations/south-bristol">Southville and Bedminster</a>, <a href="/locations/east-bristol">Fishponds</a>, <a href="/locations/north-bristol">Horfield and Bradley Stoke</a>, and <a href="/locations/central-bristol">Central Bristol</a>. Explore our full <a href="/services/">range of plumbing services</a> or view all <a href="/locations/">locations we cover</a>.</p>
-      </div>
-    </section>
-
-    <section class="cta-section">
-      <div class="container">
-        <h2>Ready to Work With Us?</h2>
-        <p>Whether you need an emergency repair or want to discuss a planned project, we're here to help.</p>
-        <div class="cta-buttons">
-          <a href="tel:+441174280200" class="btn btn-primary btn-large">Call: 0117 428 0200</a>
-          <a href="/contact" class="btn btn-secondary btn-large">Contact Form</a>
+      <div class="grid sm:grid-cols-3 gap-6 mt-12">
+        <div class="text-center p-6 bg-muted/50 rounded-xl">
+          <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h3 class="font-bold mb-2">Gas Safe Registered</h3>
+          <p class="text-sm text-muted-foreground">All gas work carried out by registered engineers</p>
+        </div>
+        <div class="text-center p-6 bg-muted/50 rounded-xl">
+          <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><circle cx="12" cy="12" r="10"></circle><polyline points="12,6 12,12 16,14"></polyline></svg>
+          </div>
+          <h3 class="font-bold mb-2">24/7 Available</h3>
+          <p class="text-sm text-muted-foreground">Emergency service when you need it most</p>
+        </div>
+        <div class="text-center p-6 bg-muted/50 rounded-xl">
+          <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3 class="font-bold mb-2">Fully Insured</h3>
+          <p class="text-sm text-muted-foreground">Complete peace of mind guaranteed</p>
         </div>
       </div>
-    </section>
-  </main>
+
+      <!-- Explore Our Services -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold mb-6">Our Plumbing Services</h2>
+        <p class="text-muted-foreground mb-6">
+          We offer a comprehensive range of <a href="/services/" class="text-primary hover:underline">plumbing services</a> to homes and businesses across Bristol and surrounding areas.
+        </p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SERVICES.map((service) => (
+            <a href={`/services/${service.slug}/`} class="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+              <span class="text-2xl">{service.icon}</span>
+              <div>
+                <span class="font-medium block">{service.name}</span>
+                <span class="text-sm text-muted-foreground">{service.shortLabel}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Areas We Cover -->
+      <div class="mt-12">
+        <h2 class="text-2xl font-bold mb-6">Areas We Cover</h2>
+        <p class="text-muted-foreground mb-6">
+          Our local engineers provide fast-response plumbing services across <a href="/locations/" class="text-primary hover:underline">Bristol and surrounding areas</a>, including:
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {LOCATIONS.slice(0, 4).map((loc) => (
+            <a href={`/locations/${loc.slug}/`} class="flex items-center gap-2 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span class="font-medium text-sm">{loc.name}</span>
+            </a>
+          ))}
+          <a href="/locations/" class="flex items-center gap-2 p-3 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors text-primary">
+            <span class="font-medium text-sm">View all areas</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Helpful Links -->
+      <div class="mt-12 pt-8 border-t border-border">
+        <p class="text-sm text-muted-foreground">
+          <a href="/" class="text-primary hover:underline">Home</a>
+          {" · "}
+          <a href="/services/" class="text-primary hover:underline">All Services</a>
+          {" · "}
+          <a href="/locations/" class="text-primary hover:underline">All Locations</a>
+          {" · "}
+          <a href="/blog/" class="text-primary hover:underline">Blog</a>
+          {" · "}
+          <a href="/faq/" class="text-primary hover:underline">FAQs</a>
+          {" · "}
+          <a href="/contact/" class="text-primary hover:underline">Contact Us</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section-padding bg-primary text-primary-foreground">
+    <div class="container-wide px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+      <p class="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+        Contact us today for a free, no-obligation quote.
+      </p>
+      <a href={`tel:${BRAND.phone}`} class="bg-white text-primary font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-white/90 transition-all text-lg inline-block">
+        Call {BRAND.phoneFormatted}
+      </a>
+    </div>
+  </section>
 </BaseLayout>
